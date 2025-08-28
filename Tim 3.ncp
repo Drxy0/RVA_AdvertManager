@@ -1,0 +1,345 @@
+<Project>
+  <Name>Tim 3</Name>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=2.4.1823.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Advertisement</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Class">
+        <Name>NewspaperAdvertisement</Name>
+        <Access>Public</Access>
+        <Location left="724" top="680" />
+        <Size width="203" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">string title</Member>
+        <Member type="Field">string description</Member>
+        <Member type="Field">string publisherFullName</Member>
+        <Member type="Field">string phoneNumber</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>Napomene:
+
+Primarna klasa: Advertisement
+Pomoćne klase: RealEstate, Location, Publisher
+Izdvojena klasa: NewspaperAdvertisement
+Stanja primarne klase: Active, Rented, Expired (zavisno od stanja menjati dostupnost smeštaja)
+
+LiveCharts2 grafikon: Doughnut
+
+Na prikazu Oglasa (Advertisements) prikazati i NewspaperAdvertisement
+
+Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
+</Text>
+        <Location left="533" top="360" />
+        <Size width="357" height="214" />
+      </Entity>
+      <Entity type="Class">
+        <Name>Location</Name>
+        <Access>Public</Access>
+        <Location left="1837" top="360" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">string city</Member>
+        <Member type="Field">string country</Member>
+        <Member type="Field">string postalCode</Member>
+        <Member type="Field">string street</Member>
+        <Member type="Field">string streetNumber</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Entity</Name>
+        <Access>Public</Access>
+        <Location left="440" top="680" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">protected DateTime createdAt</Member>
+        <Member type="Field">protected int id</Member>
+        <Modifier>Abstract</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>RealEstate</Name>
+        <Access>Public</Access>
+        <Location left="1535" top="360" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">double areaInSquareMeters</Member>
+        <Member type="Field">RealEstateType type</Member>
+        <Member type="Field">int yearBuilt</Member>
+        <Member type="Field">bool isAvailable</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Advertisement</Name>
+        <Access>Public</Access>
+        <Location left="1201" top="360" />
+        <Size width="227" height="264" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">string title</Member>
+        <Member type="Field">string description</Member>
+        <Member type="Field">DateTime createdAt</Member>
+        <Member type="Field">DateTime expirationDate</Member>
+        <Member type="Field">decimal price</Member>
+        <Member type="Field">private AdvertisementState state</Member>
+        <Member type="Field">private List&lt;IObserver&gt; observers</Member>
+        <Member type="Method">public void ExtendExpired(int days)</Member>
+        <Member type="Method">public void SetState(AdvertisementState state)</Member>
+        <Member type="Method">public decimal CalculatePricePerSquareMeter()</Member>
+        <Member type="Method">public void NotifyObservers()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Publisher</Name>
+        <Access>Public</Access>
+        <Location left="925" top="360" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">string firstName</Member>
+        <Member type="Field">string lastName</Member>
+        <Member type="Field">string contactNumber</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>AdvertisementState</Name>
+        <Access>Public</Access>
+        <Location left="1229" top="773" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">public void Handle()</Member>
+        <Modifier>Abstract</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Active</Name>
+        <Access>Public</Access>
+        <Location left="1005" top="1089" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Rented</Name>
+        <Access>Public</Access>
+        <Location left="1229" top="1089" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Expired</Name>
+        <Access>Public</Access>
+        <Location left="1459" top="1089" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>NewspaperAdvertisementAdapter</Name>
+        <Access>Public</Access>
+        <Location left="1010" top="680" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private NewspaperAdvertisement newspaperAdvert</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IObserver</Name>
+        <Access>Public</Access>
+        <Location left="1251" top="33" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void Update(Advertisement advert)</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>ClientView_UIComponents</Name>
+        <Access>Public</Access>
+        <Location left="1535" top="33" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>AdvertisementCommand</Name>
+        <Access>Public</Access>
+        <Location left="1941" top="794" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">protected Advertisement advertisement</Member>
+        <Member type="Method">public abstract void Execute()</Member>
+        <Modifier>Abstract</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>AddCommand</Name>
+        <Access>Public</Access>
+        <Location left="1713" top="1089" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>UpdateCommand</Name>
+        <Access>Public</Access>
+        <Location left="1941" top="1089" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>RemoveCommand</Name>
+        <Access>Public</Access>
+        <Location left="2176" top="1089" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Invoker</Name>
+        <Access>Public</Access>
+        <Location left="2274" top="794" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private Stack&lt;AdvertisementCommand&gt; undoStack</Member>
+        <Member type="Field">private Stack&lt;AdvertisementCommand&gt; redoStack</Member>
+        <Member type="Method">public void ExecuteCommand(AdvertisementCommand command)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Association" first="4" second="2">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1722</X>
+          <Y>473</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1812</X>
+          <Y>473</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>0..*</StartMultiplicity>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Generalization" first="0" second="3">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="5" second="4">
+        <Label>advertise</Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>0..*</StartMultiplicity>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="5" second="6">
+        <Label>post</Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>0..*</StartMultiplicity>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="5" second="7">
+        <Label>state</Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Aggregation</AssociationType>
+        <StartMultiplicity>0..*</StartMultiplicity>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Generalization" first="8" second="7">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Generalization" first="9" second="7">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Generalization" first="10" second="7">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="11" second="0">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <EndRole>adaptee</EndRole>
+      </Relationship>
+      <Relationship type="Association" first="5" second="12">
+        <Label>notifies</Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1333</X>
+          <Y>307</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1333</X>
+          <Y>275</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Realization" first="13" second="12">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1510</X>
+          <Y>131</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1465</X>
+          <Y>131</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="15" second="14">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Generalization" first="16" second="14">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Generalization" first="17" second="14">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="14" second="5">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>1400</X>
+          <Y>652</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <EndRole>#receiver</EndRole>
+        <StartMultiplicity>0..*</StartMultiplicity>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="18" second="14">
+        <Label>calls</Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Aggregation</AssociationType>
+        <StartMultiplicity>0..*</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Generalization" first="11" second="5">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>1237</X>
+          <Y>652</Y>
+        </BendPoint>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+</Project>
