@@ -41,10 +41,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Advertisement.cs" />
+    <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Entities\Location.cs" />
+    <Compile Include="Entities\NewspaperAdvertisement.cs" />
+    <Compile Include="Entities\NewspaperAdvertisementAdapter.cs" />
+    <Compile Include="Entities\Publisher.cs" />
+    <Compile Include="Entities\RealEstate.cs" />
+    <Compile Include="Enums\RealEstateType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="States\ActiveState.cs" />
+    <Compile Include="States\AdvertisementState.cs" />
+    <Compile Include="States\ExpiredState.cs" />
+    <Compile Include="States\RentedState.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
