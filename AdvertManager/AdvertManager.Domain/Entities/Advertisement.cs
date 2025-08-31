@@ -1,6 +1,5 @@
 using AdvertManager.Domain.State;
 using System;
-using System.Collections.Generic;
 
 namespace AdvertManager.Domain.Entities
 {
@@ -22,6 +21,7 @@ namespace AdvertManager.Domain.Entities
         public decimal Price { get => price; set => price = value; }
         public Publisher Publisher { get => publisher; set => publisher = value; }
         public RealEstate RealEstate { get => realEstate; set => realEstate = value; }
+        public AdvertisementState State { get => state; }
 
         //private List<IObserver> observers;
 

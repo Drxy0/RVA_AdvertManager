@@ -216,9 +216,44 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
         <Value>COMMERCIAL</Value>
         <Value>WAREHOUSE</Value>
       </Entity>
+      <Entity type="Interface">
+        <Name>IDataStorage</Name>
+        <Access>Public</Access>
+        <Location left="519" top="1111" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void Save&lt;T&gt;(string filePath, T data)</Member>
+        <Member type="Method">T Load&lt;T&gt;(string filePath)</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>XmlDataStorage</Name>
+        <Access>Public</Access>
+        <Location left="267" top="1411" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>CsvDataStorage</Name>
+        <Access>Public</Access>
+        <Location left="519" top="1411" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>JsonDataStorage</Name>
+        <Access>Public</Access>
+        <Location left="767" top="1411" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
     </Entities>
     <Relationships>
       <Relationship type="Association" first="4" second="2">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -278,6 +313,8 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Association" first="11" second="0">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
@@ -326,6 +363,8 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Association" first="14" second="5">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="False">
@@ -356,8 +395,6 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
         </BendPoint>
       </Relationship>
       <Relationship type="Dependency" first="4" second="19">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -368,6 +405,18 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
           <X>1622</X>
           <Y>278</Y>
         </BendPoint>
+      </Relationship>
+      <Relationship type="Realization" first="21" second="20">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="22" second="20">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="23" second="20">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
       </Relationship>
     </Relationships>
   </ProjectItem>
