@@ -1,4 +1,4 @@
-namespace AdvertManager.Domain.States
+namespace AdvertManager.Domain.State
 {
 	public abstract class AdvertisementState
 	{

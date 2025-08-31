@@ -41,6 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command\AddCommand.cs" />
+    <Compile Include="Command\AdvertisementCommand.cs" />
+    <Compile Include="Command\Invoker.cs" />
+    <Compile Include="Command\RemoveCommand.cs" />
+    <Compile Include="Command\UpdateCommand.cs" />
     <Compile Include="Entities\Advertisement.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\Location.cs" />
@@ -50,10 +55,10 @@
     <Compile Include="Entities\RealEstate.cs" />
     <Compile Include="Enums\RealEstateType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="States\ActiveState.cs" />
-    <Compile Include="States\AdvertisementState.cs" />
-    <Compile Include="States\ExpiredState.cs" />
-    <Compile Include="States\RentedState.cs" />
+    <Compile Include="State\ActiveState.cs" />
+    <Compile Include="State\AdvertisementState.cs" />
+    <Compile Include="State\ExpiredState.cs" />
+    <Compile Include="State\RentedState.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

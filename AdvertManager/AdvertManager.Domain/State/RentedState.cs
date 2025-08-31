@@ -1,6 +1,6 @@
 using System;
 
-namespace AdvertManager.Domain.States
+namespace AdvertManager.Domain.State
 {
     public class RentedState : AdvertisementState
     {

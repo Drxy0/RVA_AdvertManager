@@ -1,4 +1,4 @@
-using AdvertManager.Domain.States;
+using AdvertManager.Domain.State;
 using System;
 using System.Collections.Generic;
 

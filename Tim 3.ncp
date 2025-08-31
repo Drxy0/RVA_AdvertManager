@@ -7,7 +7,7 @@
       <Entity type="Class">
         <Name>NewspaperAdvertisement</Name>
         <Access>Public</Access>
-        <Location left="724" top="680" />
+        <Location left="725" top="731" />
         <Size width="203" height="216" />
         <Collapsed>False</Collapsed>
         <Member type="Field">string title</Member>
@@ -49,7 +49,7 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
       <Entity type="Class">
         <Name>Entity</Name>
         <Access>Public</Access>
-        <Location left="440" top="680" />
+        <Location left="453" top="731" />
         <Size width="162" height="216" />
         <Collapsed>False</Collapsed>
         <Member type="Field">protected DateTime createdAt</Member>
@@ -136,7 +136,7 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
       <Entity type="Class">
         <Name>NewspaperAdvertisementAdapter</Name>
         <Access>Public</Access>
-        <Location left="1010" top="680" />
+        <Location left="1018" top="731" />
         <Size width="162" height="216" />
         <Collapsed>False</Collapsed>
         <Member type="Field">private NewspaperAdvertisement newspaperAdvert</Member>
@@ -219,8 +219,6 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
     </Entities>
     <Relationships>
       <Relationship type="Association" first="4" second="2">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -280,8 +278,6 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Association" first="11" second="0">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
@@ -330,8 +326,6 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Association" first="14" second="5">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="False">
@@ -362,6 +356,8 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
         </BendPoint>
       </Relationship>
       <Relationship type="Dependency" first="4" second="19">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AdvertManager.Domain.States
+namespace AdvertManager.Domain.State
 {
     public class ExpiredState : AdvertisementState
     {

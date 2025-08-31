@@ -4,9 +4,92 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AdvertManager.Client"
+        xmlns:viewModels="clr-namespace:AdvertManager.Client.ViewModels"
+        xmlns:views="clr-namespace:AdvertManager.Client.Views"
         mc:Ignorable="d"
+        xmlns:fa5="http://schemas.fontawesome.com/icons/"
         Title="MainWindow" Height="450" Width="800">
+    
+    <!-- Every view needs to bind to a view model-->
+    <Window.DataContext>
+        <viewModels:MainWindowViewModel />
+    </Window.DataContext>
+    
+    <!-- Define DataTemplates for ViewModels to Views mapping -->
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewModels:AdvertisementsViewModel}">
+            <views:AdvertisementsView />
+        </DataTemplate>
+    </Window.Resources>
+    
+    
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="80"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <!--#region SideBar-->
+        <StackPanel Orientation="Vertical"
+                    Width="80"
+                    HorizontalAlignment="Left"
+                    Background="Gray">
+
+            <Button x:Name="AdvertisementsViewButton"
+                    ToolTip="Advertisements View (Primary class)"
+                    Cursor="Hand"
+                    Padding="0 10"
+                    Command="{Binding NavCommand}"
+                    CommandParameter="advertisements">
+                <fa5:SvgAwesome Icon="Solid_Ad"
+                                Height="32"/>
+            </Button>
+
+            <Button x:Name="RealEstatesViewButton"
+                    ToolTip="Real Estates View (Auxiliary class)"
+                    Cursor="Hand"
+                    Padding="0 10"
+                    Command="{Binding NavCommand}"
+                    CommandParameter="realEstates">
+                <fa5:SvgAwesome Icon="Solid_Warehouse"
+                                Height="32"/>
+            </Button>
+
+            <Button x:Name="LocationsViewButton"
+                    ToolTip="Locations View (Auxiliary class)"
+                    Cursor="Hand"
+                    Padding="0 10"
+                    Command="{Binding NavCommand}"
+                    CommandParameter="locations">
+                <fa5:SvgAwesome Icon="Solid_MapMarkerAlt"
+                                Height="32"/>
+            </Button>
+
+            <Button x:Name="PublishersButton"
+                    ToolTip="Publishers View (Auxiliary class)"
+                    Cursor="Hand"
+                    Padding="0 10"
+                    Command="{Binding NavCommand}"
+                    CommandParameter="publishers">
+                <fa5:SvgAwesome Icon="Solid_UserTie"
+                                Height="32"/>
+            </Button>
+
+            <Button x:Name="NewspaperAdverts"
+                    ToolTip="Newspaper Advertisements View (Adapter class)"
+                    Cursor="Hand"
+                    Padding="0 10"
+                    Command="{Binding NavCommand}"
+                    CommandParameter="newspaperAdverts">
+                <fa5:SvgAwesome Icon="Regular_Newspaper"
+                                Height="32"/>
+            </Button>
+
+        </StackPanel>
+        <!--#endregion-->
+
+        <ContentControl Grid.Column="1" 
+                Content="{Binding CurrentViewModel}" />
+
     </Grid>
 </Window>
