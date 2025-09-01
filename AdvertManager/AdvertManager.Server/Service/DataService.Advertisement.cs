@@ -1,31 +1,37 @@
 ﻿using AdvertManager.Domain.Entities;
 using AdvertManager.Server.DataStorage;
+using AdvertManager.Server.Repositories;
+using AdvertManager.Server.Service.Interfaces;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
-namespace AdvertManager.Server.Services
+namespace AdvertManager.Server.Service
 {
     public partial class DataService : IDataService
     {
-        private List<Advertisement> _advertisements = new List<Advertisement>();
+        // TODO: Note, repository pattern might be overkill here since its simple CRUD.
+        // Might want to remove it for simplicity even though it would be the 'correct' way of doing things.
+        private readonly AdvertisementRepository _advertRepository;
         private IDataStorage _storage;
         private string _filePath;
 
+        public DataService()
+        {
+            _advertRepository = new AdvertisementRepository();
+            _storage = new JsonDataStorage();
+            _filePath = "entities.json";
+
+            LoadData();
+        }
+
         public DataService(IDataStorage storage, string filePath)
         {
+            _advertRepository = new AdvertisementRepository();
             _storage = storage;
             _filePath = filePath;
 
-            if (File.Exists(filePath))
-            {
-                var loaded = _storage.Load<List<Advertisement>>(filePath);
-                if (loaded != null)
-                    _advertisements.AddRange(loaded);
-            }
+            LoadData();
         }
 
-        // Allow switching storage format at runtime
         public void SetStorage(IDataStorage storage, string filePath)
         {
             _storage = storage;
@@ -34,31 +40,26 @@ namespace AdvertManager.Server.Services
 
         public void AddAdvertisement(Advertisement ad)
         {
-            _advertisements.Add(ad);
+            _advertRepository.Add(ad);
         }
 
         public void UpdateAdvertisement(Advertisement ad)
         {
-            var existing = _advertisements.FirstOrDefault(a => a.GetHashCode() == ad.GetHashCode()); // ideally use an Id
-            if (existing != null)
-            {
-                _advertisements.Remove(existing);
-                _advertisements.Add(ad);
-            }
+            _advertRepository.Update(ad);
         }
 
-        public void DeleteAdvertisement(int adId)
+        public void DeleteAdvertisement(Advertisement ad)
         {
-            var ad = _advertisements.FirstOrDefault(a => a.GetHashCode() == adId);
             if (ad != null)
             {
-                _advertisements.Remove(ad);
+                _advertRepository.Delete(ad);
             }
         }
 
         public IEnumerable<Advertisement> GetAllAdvertisements()
         {
-            return _advertisements;
+            return _advertRepository.GetAll();
         }
+
     }
 }

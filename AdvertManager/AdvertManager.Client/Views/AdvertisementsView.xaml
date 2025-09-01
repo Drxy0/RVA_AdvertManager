@@ -22,8 +22,27 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Button>
-            Big btn
-        </Button>
+        <TextBox Grid.Row="0"
+                 Margin="10"
+                 VerticalAlignment="Center"
+                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+        
+        <DataGrid Grid.Row="1"
+                  AutoGenerateColumns="False"
+                  ItemsSource="{Binding AdvertisementsView}"
+                  IsReadOnly="True"
+                  Margin="10">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*" />
+                <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="2*" />
+                <DataGridTextColumn Header="Price" Binding="{Binding Price}" Width="Auto" />
+                <DataGridTextColumn Header="Created" Binding="{Binding CreatedAt}" Width="Auto" />
+                <DataGridTextColumn Header="Expires" Binding="{Binding ExpirationDate}" Width="Auto" />
+                <!-- Nested classes -->
+                <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher.Name}" Width="*" />
+                <DataGridTextColumn Header="Real Estate" Binding="{Binding RealEstate.Address}" Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>

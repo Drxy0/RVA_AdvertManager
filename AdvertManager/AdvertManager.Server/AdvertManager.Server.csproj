@@ -81,6 +81,7 @@
     <Compile Include="Repositories\PublisherRepository.cs" />
     <Compile Include="Repositories\RealEstateRepository.cs" />
     <Compile Include="Service\DataService.Advertisement.cs" />
+    <Compile Include="Service\DataService.LoadData.cs" />
     <Compile Include="Service\Interfaces\IDataService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

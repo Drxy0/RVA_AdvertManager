@@ -12,6 +12,12 @@ namespace AdvertManager.Server.Repositories
         {
             _advertisements.Add(entity);
         }
+
+        public void AddRange(IEnumerable<Advertisement> entities)
+        {
+            _advertisements.AddRange(entities);
+        }
+
         public void Update(Advertisement entity)
         {
             var existing = _advertisements.FirstOrDefault
@@ -39,6 +45,7 @@ namespace AdvertManager.Server.Repositories
         {
            return _advertisements;
         }
+
 
     }
 }

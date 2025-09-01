@@ -66,6 +66,7 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
         <Member type="Field">RealEstateType type</Member>
         <Member type="Field">int yearBuilt</Member>
         <Member type="Field">bool isAvailable</Member>
+        <Member type="Field">private Location location</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
