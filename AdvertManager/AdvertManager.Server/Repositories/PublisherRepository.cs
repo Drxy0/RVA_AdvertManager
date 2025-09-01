@@ -12,6 +12,11 @@ namespace AdvertManager.Server.Repositories
         {
             _publishers.Add(entity);
         }
+        
+        public void AddRange(IEnumerable<Publisher> entities)
+        {
+            _publishers.AddRange(entities);
+        }
 
         public void Update(Publisher entity)
         {

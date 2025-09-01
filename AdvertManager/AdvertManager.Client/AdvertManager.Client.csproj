@@ -64,13 +64,19 @@
     </ApplicationDefinition>
     <Compile Include="ClientProxy.cs" />
     <Compile Include="Helpers\BindableBase.cs" />
+    <Compile Include="Helpers\DialogService.cs" />
+    <Compile Include="Helpers\IDialogService.cs" />
     <Compile Include="Helpers\MyICommand.cs" />
+    <Compile Include="ViewModels\AdvertisementFormViewModel.cs" />
     <Compile Include="ViewModels\AdvertisementsViewModel.cs" />
     <Compile Include="ViewModels\LocationsViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\NewspaperAdvertsViewModel.cs" />
     <Compile Include="ViewModels\PublishersViewModel.cs" />
     <Compile Include="ViewModels\RealEstatesViewModel.cs" />
+    <Compile Include="Views\AdvertisementFormView.xaml.cs">
+      <DependentUpon>AdvertisementFormView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\AdvertisementsView.xaml.cs">
       <DependentUpon>AdvertisementsView.xaml</DependentUpon>
     </Compile>
@@ -86,6 +92,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\AdvertisementFormView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AdvertisementsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

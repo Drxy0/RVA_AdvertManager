@@ -1,8 +1,10 @@
 ﻿using AdvertManager.Client.Helpers;
 using AdvertManager.Domain.Entities;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Data;
 
 namespace AdvertManager.Client.ViewModels
@@ -13,20 +15,36 @@ namespace AdvertManager.Client.ViewModels
         private ObservableCollection<Advertisement> _advertisements;
         private ICollectionView _advertisementsView;
         private string _searchText;
+        private readonly IDialogService _dialogService;
 
-        public AdvertisementsViewModel()
+        public MyICommand AddEntityCommand { get; private set; }
+        public MyICommand UpdateEntityCommand { get; private set; }
+        public MyICommand RemoveEntityCommand { get; private set; }
+
+        public AdvertisementsViewModel() : this(new DialogService())
         {
+        }
+
+        public AdvertisementsViewModel(IDialogService dialogService)
+        {
+            _dialogService = dialogService;
             _advertisements = new ObservableCollection<Advertisement>();
 
             _proxy = new ClientProxy(
                 new System.ServiceModel.NetTcpBinding(),
                 new System.ServiceModel.EndpointAddress("net.tcp://localhost:8000/Service"));
 
-            LoadData();
+            if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
+            {
+                LoadData();
+            }
 
-            // Wrap collection so we can filter it
             _advertisementsView = CollectionViewSource.GetDefaultView(_advertisements);
             _advertisementsView.Filter = FilterAdvertisements;
+
+            AddEntityCommand = new MyICommand(OnAdd);
+            UpdateEntityCommand = new MyICommand(OnUpdate, CanModify);
+            RemoveEntityCommand = new MyICommand(OnRemove, CanModify);
         }
 
         public ICollectionView AdvertisementsView => _advertisementsView;
@@ -40,6 +58,120 @@ namespace AdvertManager.Client.ViewModels
                 _advertisementsView.Refresh(); // triggers filtering
             }
         }
+
+        private Advertisement _selectedAdvertisement;
+        public Advertisement SelectedAdvertisement
+        {
+            get => _selectedAdvertisement;
+            set
+            {
+                SetProperty(ref _selectedAdvertisement, value);
+                UpdateEntityCommand.RaiseCanExecuteChanged();
+                RemoveEntityCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        public void OnAdd()
+        {
+            var formViewModel = new AdvertisementFormViewModel(
+                OnSaveAdvertisement,
+                () => { /* Cancel logic if needed */ },
+                isEditMode: false);
+
+            var result = _dialogService.ShowDialog(formViewModel, "Add New Advertisement");
+
+            if (result == true)
+            {
+                LoadData(); // Refresh the data after adding
+            }
+        }
+
+        private void OnUpdate()
+        {
+            if (SelectedAdvertisement == null) return;
+
+            var formViewModel = new AdvertisementFormViewModel(
+                OnUpdateAdvertisement,
+                () => { /* Cancel logic */ },
+                isEditMode: true)
+            {
+                Advertisement = SelectedAdvertisement
+            };
+
+            _dialogService.ShowDialog(formViewModel, "Edit Advertisement");
+        }
+
+
+        private void OnSaveAdvertisement(Advertisement advertisement)
+        {
+            try
+            {
+                // Set creation date for new advertisements
+                advertisement.CreatedAt = DateTime.Now;
+
+                _proxy.AddAdvertisement(advertisement);
+                _advertisements.Add(advertisement);
+
+                // Close the dialog
+                Application.Current.Windows.OfType<Window>().LastOrDefault()?.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error saving advertisement: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void OnUpdateAdvertisement(Advertisement advertisement)
+        {
+            try
+            {
+                // Preserve the original creation date when updating
+                var originalCreatedAt = SelectedAdvertisement.CreatedAt;
+                advertisement.CreatedAt = originalCreatedAt;
+
+                _proxy.UpdateAdvertisement(advertisement);
+                LoadData(); // Refresh data
+
+                Application.Current.Windows.OfType<Window>().LastOrDefault()?.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating advertisement: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void OnRemove()
+        {
+            if (SelectedAdvertisement == null) return;
+
+            var result = MessageBox.Show(
+                "Are you sure you want to delete this advertisement?",
+                "Confirm Delete",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    _proxy.DeleteAdvertisement(SelectedAdvertisement);
+                    _advertisements.Remove(SelectedAdvertisement);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error deleting advertisement: {ex.Message}", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private bool CanModify()
+        {
+            return SelectedAdvertisement != null;
+        }
+
 
         private bool FilterAdvertisements(object obj)
         {

@@ -4,6 +4,8 @@
              xmlns:local="clr-namespace:AdvertManager.Client"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

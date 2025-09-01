@@ -13,6 +13,11 @@ namespace AdvertManager.Server.Repositories
             _locations.Add(entity);
         }
 
+        public void AddRange(IEnumerable<Location> entities)
+        {
+            _locations.AddRange(entities);
+        }
+
         public void Update(Location entity)
         {
             var existing = _locations.FirstOrDefault(l =>
@@ -42,5 +47,7 @@ namespace AdvertManager.Server.Repositories
         {
             return _locations;
         }
+
+
     }
 }

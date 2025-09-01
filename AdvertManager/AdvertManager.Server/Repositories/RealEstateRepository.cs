@@ -14,6 +14,11 @@ namespace AdvertManager.Server.Repositories
             _realEstates.Add(entity);
         }
 
+        public void AddRange(IEnumerable<RealEstate> entities)
+        {
+            _realEstates.AddRange(entities);
+        }
+
         public void Update(RealEstate entity)
         {
             var existing = _realEstates.FirstOrDefault(r =>

@@ -13,6 +13,11 @@ namespace AdvertManager.Server.Repositories
             _ads.Add(entity);
         }
 
+        public void AddRange(IEnumerable<NewspaperAdvertisement> entities)
+        {
+            _ads.AddRange(entities);
+        }
+
         public void Update(NewspaperAdvertisement entity)
         {
             var existing = _ads.FirstOrDefault(a =>

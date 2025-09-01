@@ -116,7 +116,7 @@ namespace AdvertManager.Server.Service
                 }
             };
 
-            _repository.AddRange(dummyAdverts);
+            _advertRepository.AddRange(dummyAdverts);
         }
     }
 }

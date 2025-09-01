@@ -11,27 +11,29 @@
     <UserControl.DataContext>
         <viewModels:AdvertisementsViewModel />
     </UserControl.DataContext>
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
-            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="100"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <TextBox Grid.Row="0"
+        <TextBox Grid.Row="0" Grid.Column="0"
                  Margin="10"
                  VerticalAlignment="Center"
                  Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
-        
-        <DataGrid Grid.Row="1"
+
+        <DataGrid Grid.Row="1" Grid.Column="0"
                   AutoGenerateColumns="False"
                   ItemsSource="{Binding AdvertisementsView}"
+                  SelectedItem="{Binding SelectedAdvertisement}"
                   IsReadOnly="True"
-                  Margin="10">
+                  Margin="10"
+                  SelectionMode="Single">
 
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*" />
@@ -39,10 +41,17 @@
                 <DataGridTextColumn Header="Price" Binding="{Binding Price}" Width="Auto" />
                 <DataGridTextColumn Header="Created" Binding="{Binding CreatedAt}" Width="Auto" />
                 <DataGridTextColumn Header="Expires" Binding="{Binding ExpirationDate}" Width="Auto" />
-                <!-- Nested classes -->
                 <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher.Name}" Width="*" />
                 <DataGridTextColumn Header="Real Estate" Binding="{Binding RealEstate.Address}" Width="*" />
             </DataGrid.Columns>
         </DataGrid>
+
+        <StackPanel Grid.Column="1" Grid.Row="1" Margin="5">
+            <Button Content="Add" Command="{Binding AddEntityCommand}" Margin="0,5"/>
+            <Button Content="Update" Command="{Binding UpdateEntityCommand}" Margin="0,5"/>
+            <Button Content="Remove" Command="{Binding RemoveEntityCommand}" Margin="0,5"/>
+            <Button Content="Redo" Margin="0,5"/>
+            <Button Content="Undo" Margin="0,5"/>
+        </StackPanel>
     </Grid>
 </UserControl>
