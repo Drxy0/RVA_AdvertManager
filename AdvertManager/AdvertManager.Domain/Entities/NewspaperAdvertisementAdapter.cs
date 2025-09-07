@@ -1,7 +1,5 @@
 namespace AdvertManager.Domain.Entities
 {
-    namespace AdvertManager.Domain.Entities
-    {
         public class NewspaperAdvertisementAdapter : Advertisement
         {
             private NewspaperAdvertisement newspaperAdvertisement;
@@ -13,5 +11,4 @@ namespace AdvertManager.Domain.Entities
 
             public NewspaperAdvertisement NewspaperAdvertisement => newspaperAdvertisement;
         }
-    }
 }

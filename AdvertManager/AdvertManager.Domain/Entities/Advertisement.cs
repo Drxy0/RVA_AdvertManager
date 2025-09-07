@@ -42,11 +42,11 @@ namespace AdvertManager.Domain.Entities
             }
         }
 
-        public void SetState(AdvertisementState newState)
+        public void SetState(AdvertisementState state)
         {
-            state = newState;
-            state.SetAdvertisement(this);
-            state.Handle();
+            this.state = state;
+            this.state.SetAdvertisement(this);
+            this.state.Handle();
         }
 
         public decimal CalculatePricePerSquareMeter()
