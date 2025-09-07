@@ -1,7 +1,15 @@
+using AdvertManager.Domain.Entities;
+using System.Runtime.Remoting.Contexts;
+
 namespace AdvertManager.Domain.State
 {
 	public abstract class AdvertisementState
 	{
-		public abstract void Handle();
+        protected Advertisement advertisement;
+        public void SetAdvertisement(Advertisement advertisement)
+        {
+            this.advertisement = advertisement;
+        }
+        public abstract void Handle();
 	}
 }

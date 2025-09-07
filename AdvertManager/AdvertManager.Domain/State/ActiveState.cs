@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace AdvertManager.Domain.State
 {
@@ -6,7 +7,12 @@ namespace AdvertManager.Domain.State
     {
         public override void Handle()
         {
-            throw new NotImplementedException();
+            advertisement.RealEstate.IsAvailable = true;
+            advertisement.NotifyObservers(); 
+            Task.Delay(30000).ContinueWith(_ =>
+            {
+                advertisement.SetState(new RentedState());
+            });
         }
     }
 }
