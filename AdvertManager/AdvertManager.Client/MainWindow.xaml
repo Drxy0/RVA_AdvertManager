@@ -20,9 +20,25 @@
         <DataTemplate DataType="{x:Type viewModels:AdvertisementsViewModel}">
             <views:AdvertisementsView />
         </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModels:RealEstatesViewModel}">
+            <views:RealEstatesView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModels:LocationsViewModel}">
+            <views:LocationsView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModels:PublishersViewModel}">
+            <views:PublishersView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModels:NewspaperAdvertsViewModel}">
+            <views:NewspaperAdvertsView />
+        </DataTemplate>
     </Window.Resources>
-    
-    
+
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="80"/>

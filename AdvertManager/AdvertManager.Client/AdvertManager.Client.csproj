@@ -80,6 +80,18 @@
     <Compile Include="Views\AdvertisementsView.xaml.cs">
       <DependentUpon>AdvertisementsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\LocationsView.xaml.cs">
+      <DependentUpon>LocationsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NewspaperAdvertsView.xaml.cs">
+      <DependentUpon>NewspaperAdvertsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PublishersView.xaml.cs">
+      <DependentUpon>PublishersView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RealEstatesView.xaml.cs">
+      <DependentUpon>RealEstatesView.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -97,6 +109,22 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AdvertisementsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LocationsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\NewspaperAdvertsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PublishersView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\RealEstatesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
