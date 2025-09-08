@@ -8,7 +8,5 @@ namespace AdvertManager.Domain.Entities
             {
                 this.newspaperAdvertisement = newspaperAdvertisement;
             }
-
-            public NewspaperAdvertisement NewspaperAdvertisement => newspaperAdvertisement;
         }
 }
