@@ -1,12 +1,12 @@
 namespace AdvertManager.Domain.Entities
 {
-	public class NewspaperAdvertisementAdapter : Advertisement
-	{
-		private NewspaperAdvertisement newspaperAdvert;
-
-        public NewspaperAdvertisementAdapter(NewspaperAdvertisement newspaperAdvert)
+        public class NewspaperAdvertisementAdapter : Advertisement
         {
-            this.newspaperAdvert = newspaperAdvert;
+            private NewspaperAdvertisement newspaperAdvertisement;
+
+            public NewspaperAdvertisementAdapter(NewspaperAdvertisement newspaperAdvertisement)
+            {
+                this.newspaperAdvertisement = newspaperAdvertisement;
+            }
         }
-    }
 }

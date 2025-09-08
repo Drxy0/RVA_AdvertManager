@@ -107,6 +107,8 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
         <Location left="1229" top="773" />
         <Size width="162" height="216" />
         <Collapsed>False</Collapsed>
+        <Member type="Field">protected Advertisement advertisement</Member>
+        <Member type="Method">public void SetAdvertisement(Advertisement advertisement)</Member>
         <Member type="Method">public abstract void Handle()</Member>
         <Modifier>Abstract</Modifier>
       </Entity>
@@ -253,8 +255,6 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
     </Entities>
     <Relationships>
       <Relationship type="Association" first="4" second="2">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -314,8 +314,6 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Association" first="11" second="0">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
@@ -364,8 +362,6 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Association" first="14" second="5">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="False">
@@ -396,6 +392,8 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
         </BendPoint>
       </Relationship>
       <Relationship type="Dependency" first="4" second="19">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">

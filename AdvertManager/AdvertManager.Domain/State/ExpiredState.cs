@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace AdvertManager.Domain.State
 {
@@ -8,7 +9,12 @@ namespace AdvertManager.Domain.State
     {
         public override void Handle()
         {
-            throw new NotImplementedException();
+            advertisement.RealEstate.IsAvailable = false;
+            advertisement.NotifyObservers(); 
+            Task.Delay(30000).ContinueWith(_ =>
+            {
+                advertisement.SetState(new ActiveState());
+            });
         }
     }
 }
