@@ -1,9 +1,8 @@
 using AdvertManager.Domain.Enums;
-using System.ComponentModel;
 
 namespace AdvertManager.Domain.Entities
 {
-    public class RealEstate : INotifyPropertyChanged
+    public class RealEstate
     {
         private int id;
         private double areaInSquareMeters;
@@ -23,44 +22,11 @@ namespace AdvertManager.Domain.Entities
             this.location = location;
         }
 
-        public int Id
-        {
-            get => id;
-            set { id = value; OnPropertyChanged(nameof(Id)); }
-        }
-
-        public double AreaInSquareMeters
-        {
-            get => areaInSquareMeters;
-            set { areaInSquareMeters = value; OnPropertyChanged(nameof(AreaInSquareMeters)); }
-        }
-
-        public RealEstateType Type
-        {
-            get => type;
-            set { type = value; OnPropertyChanged(nameof(Type)); }
-        }
-
-        public int YearBuilt
-        {
-            get => yearBuilt;
-            set { yearBuilt = value; OnPropertyChanged(nameof(YearBuilt)); }
-        }
-
-        public bool IsAvailable
-        {
-            get => isAvailable;
-            set { isAvailable = value; OnPropertyChanged(nameof(IsAvailable)); }
-        }
-
-        public Location Location
-        {
-            get => location;
-            set { location = value; OnPropertyChanged(nameof(Location)); }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        public int Id { get => id; set => id = value; }
+        public double AreaInSquareMeters { get => areaInSquareMeters; set => areaInSquareMeters = value; }
+        public RealEstateType Type { get => type; set => type = value; }
+        public int YearBuilt { get => yearBuilt; set => yearBuilt = value; }
+        public bool IsAvailable { get => isAvailable; set => isAvailable = value; }
+        public Location Location { get => location; set => location = value; }
     }
 }

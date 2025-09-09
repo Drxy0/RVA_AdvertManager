@@ -1,7 +1,8 @@
-﻿using AdvertManager.Client.Helpers;
-using AdvertManager.Domain.Entities;
+﻿using AdvertManager.Domain.Entities;
+using AdvertManager.Client.Helpers;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Data;
 
@@ -12,27 +13,33 @@ namespace AdvertManager.Client.ViewModels
         private ClientProxy _proxy;
         private ObservableCollection<Location> _locations;
         private ICollectionView _locationsView;
-        private Location _newLocation;
+        private Location _formLocation;
         private string _errorMessage;
 
         public LocationsViewModel()
         {
+            _locations = new ObservableCollection<Location>();
             _proxy = new ClientProxy(
-            new System.ServiceModel.NetTcpBinding(),
-            new System.ServiceModel.EndpointAddress("net.tcp://localhost:8000/Service"));
+                new System.ServiceModel.NetTcpBinding(),
+                new System.ServiceModel.EndpointAddress("net.tcp://localhost:8000/Service"));
 
-            //dummy data for now, so we can add a location to real estate
+            //if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
+            //{
+            //    LoadData();
+            //}
+            //dummy data:
             _locations = new ObservableCollection<Location>
             {
-                new Location { Id = 1, City = "Belgrade", Country = "Serbia", PostalCode = "11000", Street = "Vuka Karadzica", StreetNumber = "10" },
-                new Location { Id = 2, City = "Novi Sad", Country = "Serbia", PostalCode = "21000", Street = "Cara Lazara", StreetNumber = "33" },
-                new Location { Id = 3, City = "Niš", Country = "Serbia", PostalCode = "18000", Street = "Kralja Petra", StreetNumber = "4" }
+                new Location("Belgrade", "Serbia", "11000", "Vuka Karadzica", "10"){ Id = 1},
+                new Location("Novi Sad", "Serbia", "21000", "Cara Lazara", "33"){ Id = 2},
+                new Location("Niš", "Serbia", "18000", "Kralja Petra", "4"){ Id = 3}
             };
-            //LoadData();
+
             _locationsView = CollectionViewSource.GetDefaultView(_locations);
 
-            NewLocation = new Location();
-            AddEntityCommand = new MyICommand(OnAdd);
+            FormLocation = new Location("", "", "", "", "");
+
+            AddCommand = new MyICommand(OnAdd);
         }
 
         //private void LoadData()
@@ -46,39 +53,11 @@ namespace AdvertManager.Client.ViewModels
         //}
 
         public ICollectionView LocationsView => _locationsView;
-        public Location SelectedLocation { get; set; }
 
-        public Location NewLocation
+        public Location FormLocation
         {
-            get => _newLocation;
-            set
-            {
-                if (_newLocation != null)
-                {
-                    _newLocation.PropertyChanged -= NewLocation_PropertyChanged;
-                }
-
-                SetProperty(ref _newLocation, value);
-
-                if (_newLocation != null)
-                {
-                    _newLocation.PropertyChanged += NewLocation_PropertyChanged;
-                }
-
-                OnPropertyChanged(nameof(CanAdd));
-            }
-        }
-
-        private void NewLocation_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Location.City) ||
-                e.PropertyName == nameof(Location.Country) ||
-                e.PropertyName == nameof(Location.PostalCode) ||
-                e.PropertyName == nameof(Location.Street) ||
-                e.PropertyName == nameof(Location.StreetNumber))
-            {
-                OnPropertyChanged(nameof(CanAdd));
-            }
+            get => _formLocation;
+            set => SetProperty(ref _formLocation, value);
         }
 
         public string ErrorMessage
@@ -88,38 +67,52 @@ namespace AdvertManager.Client.ViewModels
             {
                 SetProperty(ref _errorMessage, value);
                 OnPropertyChanged(nameof(HasError));
-                OnPropertyChanged(nameof(CanAdd));
             }
         }
 
         public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
-        public bool CanAdd =>
-            !string.IsNullOrWhiteSpace(NewLocation.City) &&
-            !string.IsNullOrWhiteSpace(NewLocation.Country) &&
-            !string.IsNullOrWhiteSpace(NewLocation.PostalCode) &&
-            !string.IsNullOrWhiteSpace(NewLocation.Street) &&
-            !string.IsNullOrWhiteSpace(NewLocation.StreetNumber) &&
-            Regex.IsMatch(NewLocation.PostalCode, @"^\d+$") &&
-            Regex.IsMatch(NewLocation.StreetNumber, @"^\d+$");
+        public MyICommand AddCommand { get; }
 
-
-        public MyICommand AddEntityCommand { get; private set; }
-
-        public void OnAdd()
+        private bool Validate()
         {
-            if (!CanAdd)
+            if (string.IsNullOrWhiteSpace(FormLocation.City) ||
+                string.IsNullOrWhiteSpace(FormLocation.Country) ||
+                string.IsNullOrWhiteSpace(FormLocation.PostalCode) ||
+                string.IsNullOrWhiteSpace(FormLocation.Street) ||
+                string.IsNullOrWhiteSpace(FormLocation.StreetNumber))
             {
-                ErrorMessage = "Please fill all fields";
-                return;
+                ErrorMessage = "All fields are required.";
+                return false;
+            }
+
+            if (!Regex.IsMatch(FormLocation.PostalCode, @"^\d+$"))
+            {
+                ErrorMessage = "Postal code must be digits only.";
+                return false;
+            }
+
+            if (!Regex.IsMatch(FormLocation.StreetNumber, @"^\d+$"))
+            {
+                ErrorMessage = "Street number must be digits only.";
+                return false;
             }
 
             ErrorMessage = string.Empty;
+            return true;
+        }
 
-            //_proxy.AddLocation(NewLocation); // for later integration
-            _locations.Add(NewLocation);
+        private void OnAdd()
+        {
+            if (!Validate()) return;
 
-            NewLocation = new Location();
+            int newId = _locations.Any() ? _locations.Max(l => l.Id) + 1 : 1;
+            FormLocation.Id = newId;
+
+            //_proxy.AddPublisher(FormPublisher);
+            _locations.Add(FormLocation);
+
+            FormLocation = new Location("", "", "", "", "");
 
             _locationsView.Refresh();
         }

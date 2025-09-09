@@ -1,10 +1,11 @@
-﻿using AdvertManager.Client.Helpers;
-using AdvertManager.Domain.Entities;
+﻿using AdvertManager.Domain.Entities;
+using AdvertManager.Client.Helpers;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows;
 using System.Windows.Data;
+using System.Windows;
 
 namespace AdvertManager.Client.ViewModels
 {
@@ -13,21 +14,30 @@ namespace AdvertManager.Client.ViewModels
         private ClientProxy _proxy;
         private ObservableCollection<Publisher> _publishers;
         private ICollectionView _publishersView;
-        private Publisher _newPublisher;
+        private Publisher _formPublisher;
         private string _errorMessage;
 
         public PublishersViewModel()
         {
-            _proxy = new ClientProxy(
-            new System.ServiceModel.NetTcpBinding(),
-            new System.ServiceModel.EndpointAddress("net.tcp://localhost:8000/Service"));
-
             _publishers = new ObservableCollection<Publisher>();
-            //LoadData();
+            _proxy = new ClientProxy(
+                new System.ServiceModel.NetTcpBinding(),
+                new System.ServiceModel.EndpointAddress("net.tcp://localhost:8000/Service"));
+
+            //if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
+            //{
+            //    LoadData();
+            //}
+
             _publishersView = CollectionViewSource.GetDefaultView(_publishers);
 
-            NewPublisher = new Publisher();
-            AddEntityCommand = new MyICommand(OnAdd);
+            FormPublisher = new Publisher();
+
+            AddCommand = new MyICommand(OnAdd);
+
+            // Sample data
+            _publishers.Add(new Publisher { Id = 1, FirstName = "John", LastName = "Doe", ContactNumber = "1234567890" });
+            _publishers.Add(new Publisher { Id = 2, FirstName = "Jane", LastName = "Smith", ContactNumber = "0987654321" });
         }
 
         //private void LoadData()
@@ -41,37 +51,11 @@ namespace AdvertManager.Client.ViewModels
         //}
 
         public ICollectionView PublishersView => _publishersView;
-        public Publisher SelectedPublisher { get; set; }
 
-        public Publisher NewPublisher
+        public Publisher FormPublisher
         {
-            get => _newPublisher;
-            set
-            {
-                if (_newPublisher != null)
-                {
-                    _newPublisher.PropertyChanged -= NewPublisher_PropertyChanged;
-                }
-
-                SetProperty(ref _newPublisher, value);
-
-                if (_newPublisher != null)
-                {
-                    _newPublisher.PropertyChanged += NewPublisher_PropertyChanged;
-                }
-
-                OnPropertyChanged(nameof(CanAdd));
-            }
-        }
-
-        private void NewPublisher_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Publisher.FirstName) ||
-                e.PropertyName == nameof(Publisher.LastName) ||
-                e.PropertyName == nameof(Publisher.ContactNumber))
-            {
-                OnPropertyChanged(nameof(CanAdd));
-            }
+            get => _formPublisher;
+            set => SetProperty(ref _formPublisher, value);
         }
 
         public string ErrorMessage
@@ -81,37 +65,45 @@ namespace AdvertManager.Client.ViewModels
             {
                 SetProperty(ref _errorMessage, value);
                 OnPropertyChanged(nameof(HasError));
-                OnPropertyChanged(nameof(CanAdd));
             }
         }
 
         public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
-        public bool CanAdd =>
-            !string.IsNullOrWhiteSpace(NewPublisher?.FirstName) &&
-            !string.IsNullOrWhiteSpace(NewPublisher?.LastName) &&
-            !string.IsNullOrWhiteSpace(NewPublisher?.ContactNumber) &&
-            NewPublisher.ContactNumber.All(char.IsDigit); // 👈 digits-only check
+        public MyICommand AddCommand { get; }
 
-        public MyICommand AddEntityCommand { get; private set; }
-
-        public void OnAdd()
+        private bool Validate()
         {
-            if (!CanAdd)
+            if (string.IsNullOrWhiteSpace(FormPublisher.FirstName) ||
+                string.IsNullOrWhiteSpace(FormPublisher.LastName) ||
+                string.IsNullOrWhiteSpace(FormPublisher.ContactNumber))
             {
-                ErrorMessage = "Please fill all fields (contact number must be digits only)";
-                return;
+                ErrorMessage = "All fields are required.";
+                return false;
+            }
+
+            if (!FormPublisher.ContactNumber.All(char.IsDigit))
+            {
+                ErrorMessage = "Contact number must contain only digits.";
+                return false;
             }
 
             ErrorMessage = string.Empty;
+            return true;
+        }
 
-            //_proxy.AddPublisher(NewPublisher);
-            _publishers.Add(NewPublisher);
+        private void OnAdd()
+        {
+            if (!Validate()) return;
 
-            NewPublisher = new Publisher();
+            var newId = _publishers.Any() ? _publishers.Max(p => p.Id) + 1 : 1;
+            FormPublisher.Id = newId;
+
+            //_proxy.AddPublisher(FormPublisher);
+            _publishers.Add(FormPublisher);
+            FormPublisher = new Publisher();
 
             _publishersView.Refresh();
         }
     }
 }
-    

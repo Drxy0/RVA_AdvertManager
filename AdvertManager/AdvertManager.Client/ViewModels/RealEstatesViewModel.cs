@@ -1,9 +1,10 @@
-﻿using AdvertManager.Client.Helpers;
-using AdvertManager.Domain.Entities;
+﻿using AdvertManager.Domain.Entities;
 using AdvertManager.Domain.Enums;
-using System;
+using AdvertManager.Client.Helpers;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Data;
 
 namespace AdvertManager.Client.ViewModels
@@ -13,40 +14,42 @@ namespace AdvertManager.Client.ViewModels
         private ClientProxy _proxy;
         private ObservableCollection<RealEstate> _realEstates;
         private ICollectionView _realEstatesView;
-        private RealEstate _newRealEstate;
-        private string _errorMessage;
-
+        private RealEstate _formRealEstate;
         private string _areaInput;
         private string _yearBuiltInput;
+        private string _errorMessage;
 
         public ObservableCollection<Location> Locations { get; set; }
         public ObservableCollection<RealEstateType> RealEstateTypes { get; set; }
 
-        public MyICommand AddEntityCommand { get; private set; }
+        public MyICommand AddCommand { get; }
 
         public RealEstatesViewModel()
         {
+            _realEstates = new ObservableCollection<RealEstate>();
             _proxy = new ClientProxy(
-            new System.ServiceModel.NetTcpBinding(),
-            new System.ServiceModel.EndpointAddress("net.tcp://localhost:8000/Service"));
+                new System.ServiceModel.NetTcpBinding(),
+                new System.ServiceModel.EndpointAddress("net.tcp://localhost:8000/Service"));
 
-            //dummy data for now, later will be pulled from locations repository
+            //if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
+            //{
+            //    LoadData();
+            //}
+            //dummy data:
             Locations = new ObservableCollection<Location>
             {
-                new Location { Id = 1, City = "Belgrade", Country = "Serbia", PostalCode = "11000", Street = "Vuka Karadzica", StreetNumber = "10" },
-                new Location { Id = 2, City = "Novi Sad", Country = "Serbia", PostalCode = "21000", Street = "Cara Lazara", StreetNumber = "33" },
-                new Location { Id = 3, City = "Niš", Country = "Serbia", PostalCode = "18000", Street = "Kralja Petra", StreetNumber = "4" }
+                new Location("Belgrade", "Serbia", "11000", "Vuka Karadzica", "10"){ Id = 1 },
+                new Location("Novi Sad", "Serbia", "21000", "Cara Lazara", "33"){ Id = 2 },
+                new Location("Niš", "Serbia", "18000", "Kralja Petra", "4"){ Id = 3 }
             };
 
             RealEstateTypes = new ObservableCollection<RealEstateType>(
                 (RealEstateType[])System.Enum.GetValues(typeof(RealEstateType))
             );
 
-            _realEstates = new ObservableCollection<RealEstate>();
-            //LoadData();
             _realEstatesView = CollectionViewSource.GetDefaultView(_realEstates);
 
-            NewRealEstate = new RealEstate
+            FormRealEstate = new RealEstate
             {
                 Type = RealEstateType.HOUSE,
                 IsAvailable = true,
@@ -56,7 +59,7 @@ namespace AdvertManager.Client.ViewModels
             AreaInput = "";
             YearBuiltInput = "";
 
-            AddEntityCommand = new MyICommand(OnAdd);
+            AddCommand = new MyICommand(OnAdd);
         }
 
         //private void LoadData()
@@ -67,6 +70,7 @@ namespace AdvertManager.Client.ViewModels
         //    {
         //        _realEstates.Add(realEstate);
         //    }
+        //
         //    var locations = _proxy.GetAllLocations();
         //    Locations.Clear();
         //    foreach (var location in locations)
@@ -78,34 +82,22 @@ namespace AdvertManager.Client.ViewModels
         public ICollectionView RealEstatesView => _realEstatesView;
         public RealEstate SelectedRealEstate { get; set; }
 
-        public RealEstate NewRealEstate
+        public RealEstate FormRealEstate
         {
-            get => _newRealEstate;
-            set
-            {
-                SetProperty(ref _newRealEstate, value);
-                OnPropertyChanged(nameof(CanAdd));
-            }
+            get => _formRealEstate;
+            set => SetProperty(ref _formRealEstate, value);
         }
 
         public string AreaInput
         {
             get => _areaInput;
-            set
-            {
-                SetProperty(ref _areaInput, value);
-                OnPropertyChanged(nameof(CanAdd));
-            }
+            set => SetProperty(ref _areaInput, value);
         }
 
         public string YearBuiltInput
         {
             get => _yearBuiltInput;
-            set
-            {
-                SetProperty(ref _yearBuiltInput, value);
-                OnPropertyChanged(nameof(CanAdd));
-            }
+            set => SetProperty(ref _yearBuiltInput, value);
         }
 
         public string ErrorMessage
@@ -120,45 +112,66 @@ namespace AdvertManager.Client.ViewModels
 
         public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
-        public bool CanAdd =>
-            double.TryParse(AreaInput, out double area) && area > 0 &&
-            int.TryParse(YearBuiltInput, out int year) && year > 0 &&
-            NewRealEstate.Type != 0 &&
-            NewRealEstate.Location != null;
 
-        public void OnAdd()
+        private bool Validate()
         {
-            if (!CanAdd)
+            if (string.IsNullOrWhiteSpace(AreaInput) ||
+                string.IsNullOrWhiteSpace(YearBuiltInput) ||
+                FormRealEstate.Location == null)
             {
-                ErrorMessage = "Please fill all fields correctly";
-                return;
+                ErrorMessage = "All fields are required.";
+                return false;
+            }
+
+            if (!double.TryParse(AreaInput, out double area))
+            {
+                ErrorMessage = "Area must be a number.";
+                return false;
+            }
+
+            if (!int.TryParse(YearBuiltInput, out int year))
+            {
+                ErrorMessage = "Year built must be a number.";
+                return false;
+            }
+
+            if (area < 10 || area > 500)
+            {
+                ErrorMessage = "Area must be between 10 and 500 m².";
+                return false;
+            }
+
+            if (year < 1800 || year > 2025)
+            {
+                ErrorMessage = "Year built must be between 1800 and 2025.";
+                return false;
             }
 
             ErrorMessage = string.Empty;
+            return true;
+        }
 
-            //_proxy.AddRealEstate(new RealEstate
-            //{
-            //    AreaInSquareMeters = double.Parse(AreaInput),
-            //    Type = NewRealEstate.Type,
-            //    YearBuilt = int.Parse(YearBuiltInput),
-            //    IsAvailable = NewRealEstate.IsAvailable,
-            //    Location = NewRealEstate.Location
-            //}););  for later integration
+        private void OnAdd()
+        {
+            if (!Validate()) return;
+
+            int newId = _realEstates.Any() ? _realEstates.Max(r => r.Id) + 1 : 1;
+
             _realEstates.Add(new RealEstate
             {
+                Id = newId,
                 AreaInSquareMeters = double.Parse(AreaInput),
-                Type = NewRealEstate.Type,
+                Type = FormRealEstate.Type,
                 YearBuilt = int.Parse(YearBuiltInput),
-                IsAvailable = NewRealEstate.IsAvailable,
-                Location = NewRealEstate.Location
+                IsAvailable = FormRealEstate.IsAvailable,
+                Location = FormRealEstate.Location
             });
 
-            // Reset inputs
             AreaInput = "";
             YearBuiltInput = "";
-            NewRealEstate.Type = RealEstateType.HOUSE;
-            NewRealEstate.IsAvailable = true;
-            NewRealEstate.Location = Locations[0];
+            FormRealEstate.Type = RealEstateType.HOUSE;
+            FormRealEstate.IsAvailable = true;
+            FormRealEstate.Location = Locations[0];
 
             _realEstatesView.Refresh();
         }
