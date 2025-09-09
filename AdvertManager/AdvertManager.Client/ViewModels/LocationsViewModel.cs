@@ -109,7 +109,7 @@ namespace AdvertManager.Client.ViewModels
             int newId = _locations.Any() ? _locations.Max(l => l.Id) + 1 : 1;
             FormLocation.Id = newId;
 
-            //_proxy.AddPublisher(FormPublisher);
+            //_proxy.AddLocation(FormLocation);
             _locations.Add(FormLocation);
 
             FormLocation = new Location("", "", "", "", "");

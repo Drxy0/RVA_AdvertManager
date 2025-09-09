@@ -157,6 +157,15 @@ namespace AdvertManager.Client.ViewModels
 
             int newId = _realEstates.Any() ? _realEstates.Max(r => r.Id) + 1 : 1;
 
+            //_proxy.AddRealEstate(new RealEstate
+            //{
+            //    Id = newId,
+            //    AreaInSquareMeters = double.Parse(AreaInput),
+            //    Type = FormRealEstate.Type,
+            //    YearBuilt = int.Parse(YearBuiltInput),
+            //    IsAvailable = FormRealEstate.IsAvailable,
+            //    Location = FormRealEstate.Location
+            //});
             _realEstates.Add(new RealEstate
             {
                 Id = newId,

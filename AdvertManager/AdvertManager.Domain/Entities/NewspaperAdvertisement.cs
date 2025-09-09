@@ -15,6 +15,7 @@ namespace AdvertManager.Domain.Entities
             this.phoneNumber = phoneNumber;
         }
 
+        public int Id { get => id; set => id = value; }
         public string Title { get => title; set => title = value; }
         public string Description { get => description; set => description = value; }
         public string PublisherFullName { get => publisherFullName; set => publisherFullName = value; }

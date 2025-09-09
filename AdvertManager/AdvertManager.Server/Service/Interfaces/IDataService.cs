@@ -20,5 +20,8 @@ namespace AdvertManager.Server.Service.Interfaces
 
         //[OperationContract] void AddRealEstate(RealEstate realEstate);
         //[OperationContract] IEnumerable<RealEstate> GetAllRealEstates();
+
+        //[OperationContract] void AddNewspaperAdvertisement(NewspaperAdvertisement newspaperAdvertisement);
+        //[OperationContract] IEnumerable<NewspaperAdvertisement> GetAllNewspaperAdvertisements();
     }
 }
