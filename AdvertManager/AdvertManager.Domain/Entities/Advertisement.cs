@@ -7,6 +7,7 @@ namespace AdvertManager.Domain.Entities
 {
 	public class Advertisement
 	{
+        private int id;
         private string title;
         private string description;
         private DateTime createdAt;
@@ -24,6 +25,7 @@ namespace AdvertManager.Domain.Entities
             SetState(new ActiveState());
         }
 
+        public int Id { get => id; set => id = value; }
         public string Title { get => title; set => title = value; }
         public string Description { get => description; set => description = value; }
         public DateTime CreatedAt { get => createdAt; set => createdAt = value; }
