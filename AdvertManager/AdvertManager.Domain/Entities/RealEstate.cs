@@ -2,13 +2,16 @@ using AdvertManager.Domain.Enums;
 
 namespace AdvertManager.Domain.Entities
 {
-	public class RealEstate
-	{
+    public class RealEstate
+    {
+        private int id;
         private double areaInSquareMeters;
-		private RealEstateType type;
-		private int yearBuilt;
+        private RealEstateType type;
+        private int yearBuilt;
         private bool isAvailable;
         private Location location;
+
+        public RealEstate() { }
 
         public RealEstate(double areaInSquareMeters, RealEstateType type, int yearBuilt, bool isAvailable, Location location)
         {
@@ -19,6 +22,7 @@ namespace AdvertManager.Domain.Entities
             this.location = location;
         }
 
+        public int Id { get => id; set => id = value; }
         public double AreaInSquareMeters { get => areaInSquareMeters; set => areaInSquareMeters = value; }
         public RealEstateType Type { get => type; set => type = value; }
         public int YearBuilt { get => yearBuilt; set => yearBuilt = value; }

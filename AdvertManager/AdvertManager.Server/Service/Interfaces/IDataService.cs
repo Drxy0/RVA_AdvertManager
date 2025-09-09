@@ -11,5 +11,17 @@ namespace AdvertManager.Server.Service.Interfaces
         [OperationContract] void UpdateAdvertisement(Advertisement ad);
         [OperationContract] void DeleteAdvertisement(Advertisement ad);
         [OperationContract] IEnumerable<Advertisement> GetAllAdvertisements();
+
+        //[OperationContract] void AddPublisher(Publisher publisher);
+        //[OperationContract] IEnumerable<Publisher> GetAllPublishers();
+
+        //[OperationContract] void AddLocation(Location location);
+        //[OperationContract] IEnumerable<Location> GetAllLocations();
+
+        //[OperationContract] void AddRealEstate(RealEstate realEstate);
+        //[OperationContract] IEnumerable<RealEstate> GetAllRealEstates();
+
+        //[OperationContract] void AddNewspaperAdvertisement(NewspaperAdvertisement newspaperAdvertisement);
+        //[OperationContract] IEnumerable<NewspaperAdvertisement> GetAllNewspaperAdvertisements();
     }
 }

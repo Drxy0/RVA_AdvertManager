@@ -3,31 +3,61 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:viewModels="clr-namespace:AdvertManager.Client.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="850">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+
+    <UserControl.DataContext>
+        <viewModels:NewspaperAdvertsViewModel />
+    </UserControl.DataContext>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
-            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="150"/>
         </Grid.ColumnDefinitions>
 
+        <!-- DataGrid -->
         <DataGrid Grid.Column="0"
                   AutoGenerateColumns="False"
-                  ItemsSource="{Binding NewspaperAdsView}"
-                  IsReadOnly="True"
+                  ItemsSource="{Binding AdsView}"
                   Margin="10"
-                  SelectionMode="Single">
-
+                  IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="2*" />
-                <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="3*" />
-                <DataGridTextColumn Header="Publisher" Binding="{Binding PublisherFullName}" Width="2*" />
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="30"/>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*" />
+                <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="2*" />
+                <DataGridTextColumn Header="Publisher" Binding="{Binding PublisherFullName}" Width="*" />
                 <DataGridTextColumn Header="Phone" Binding="{Binding PhoneNumber}" Width="*" />
             </DataGrid.Columns>
         </DataGrid>
 
+        <!-- Form -->
         <StackPanel Grid.Column="1" Margin="5">
-            <Button Content="Add" Command="{Binding AddEntityCommand}" Margin="0,5"/>
+            <TextBlock Text="Add New Advertisement" FontWeight="Bold" Margin="0,0,0,10"/>
+
+            <TextBlock Text="Title:" Margin="0,5,0,2"/>
+            <TextBox Text="{Binding FormAd.Title, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10"/>
+
+            <TextBlock Text="Description:" Margin="0,5,0,2"/>
+            <TextBox Text="{Binding FormAd.Description, UpdateSourceTrigger=PropertyChanged}" 
+                     Margin="0,0,0,10" Height="75" AcceptsReturn="True" TextWrapping="Wrap"/>
+
+            <TextBlock Text="Publisher Full Name:" Margin="0,5,0,2"/>
+            <TextBox Text="{Binding FormAd.PublisherFullName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10"/>
+
+            <TextBlock Text="Phone Number:" Margin="0,5,0,2"/>
+            <TextBox Text="{Binding FormAd.PhoneNumber, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
+
+            <Button Content="Add" Command="{Binding AddCommand}" Margin="0,5"/>
+
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" Margin="0,10,0,0"
+                       TextWrapping="Wrap"
+                       Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         </StackPanel>
     </Grid>
 </UserControl>

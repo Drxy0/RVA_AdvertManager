@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:AdvertManager.Client.Views"
              xmlns:viewModels="clr-namespace:AdvertManager.Client.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="850">
 
     <UserControl.DataContext>
         <viewModels:AdvertisementsViewModel />
@@ -15,7 +15,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
-            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="150"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
@@ -28,23 +28,24 @@
                  Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
 
         <DataGrid Grid.Row="1" Grid.Column="0"
-                  AutoGenerateColumns="False"
-                  ItemsSource="{Binding AdvertisementsView}"
-                  SelectedItem="{Binding SelectedAdvertisement}"
-                  IsReadOnly="True"
-                  Margin="10"
-                  SelectionMode="Single">
-
+          AutoGenerateColumns="False"
+          ItemsSource="{Binding AdvertisementsView}"
+          SelectedItem="{Binding SelectedAdvertisement}"
+          IsReadOnly="True"
+          Margin="10"
+          SelectionMode="Single">
             <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="30"/>
                 <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*" />
                 <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="2*" />
                 <DataGridTextColumn Header="Price" Binding="{Binding Price}" Width="Auto" />
                 <DataGridTextColumn Header="Created" Binding="{Binding CreatedAt}" Width="Auto" />
                 <DataGridTextColumn Header="Expires" Binding="{Binding ExpirationDate}" Width="Auto" />
                 <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher.Name}" Width="*" />
-                <DataGridTextColumn Header="Real Estate" Binding="{Binding RealEstate.Address}" Width="*" />
+                <DataGridTextColumn Header="Real Estate" Binding="{Binding RealEstate.Id}" Width="*" />
             </DataGrid.Columns>
         </DataGrid>
+
 
         <StackPanel Grid.Column="1" Grid.Row="1" Margin="5">
             <Button Content="Add" Command="{Binding AddEntityCommand}" Margin="0,5"/>

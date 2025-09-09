@@ -3,10 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:AdvertManager.Client.Views"
              xmlns:viewModels="clr-namespace:AdvertManager.Client.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="850">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
 
     <UserControl.DataContext>
         <viewModels:PublishersViewModel />
@@ -15,29 +18,43 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
-            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="150"/>
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
 
-        <DataGrid Grid.Row="1" Grid.Column="0"
+        <!-- DataGrid -->
+        <DataGrid Grid.Column="0"
                   AutoGenerateColumns="False"
                   ItemsSource="{Binding PublishersView}"
                   SelectedItem="{Binding SelectedPublisher}"
-                  IsReadOnly="True"
                   Margin="10"
-                  SelectionMode="Single">
-
+                  SelectionMode="Single"
+                  IsReadOnly="True">
             <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="30"/>
                 <DataGridTextColumn Header="First Name" Binding="{Binding FirstName}" Width="*" />
                 <DataGridTextColumn Header="Last Name" Binding="{Binding LastName}" Width="*" />
                 <DataGridTextColumn Header="Contact Number" Binding="{Binding ContactNumber}" Width="*" />
             </DataGrid.Columns>
         </DataGrid>
 
-        <StackPanel Grid.Column="1" Grid.Row="1" Margin="5">
-            <Button Content="Add" Command="{Binding AddEntityCommand}" Margin="0,5"/>
+        <!-- Form -->
+        <StackPanel Grid.Column="1" Margin="5">
+            <TextBlock Text="Add New Publisher" FontWeight="Bold" Margin="0,0,0,10"/>
+
+            <TextBlock Text="First Name:" Margin="0,5,0,2"/>
+            <TextBox Text="{Binding FormPublisher.FirstName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10"/>
+
+            <TextBlock Text="Last Name:" Margin="0,5,0,2"/>
+            <TextBox Text="{Binding FormPublisher.LastName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10"/>
+
+            <TextBlock Text="Contact Number:" Margin="0,5,0,2"/>
+            <TextBox Text="{Binding FormPublisher.ContactNumber, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
+
+            <Button Content="Add" Command="{Binding AddCommand}" Margin="0,5"/>
+
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" Margin="0,10,0,0"
+                       TextWrapping="Wrap"
+                       Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         </StackPanel>
     </Grid>
 </UserControl>

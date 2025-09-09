@@ -61,6 +61,5 @@
     <Compile Include="State\ExpiredState.cs" />
     <Compile Include="State\RentedState.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
