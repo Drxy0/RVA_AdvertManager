@@ -17,40 +17,18 @@ namespace AdvertManager.Client.ViewModels
         private Location _formLocation;
         private string _errorMessage;
 
-        public ObservableCollection<Location> Locations => _locations;
-        public MyICommand AddCommand { get; }
-
-        public LocationsViewModel()
+        public LocationsViewModel(ObservableCollection<Location> sharedLocations)
         {
-            _locations = new ObservableCollection<Location>();
             _proxy = new ClientProxy(
-                new System.ServiceModel.NetTcpBinding(),
-                new System.ServiceModel.EndpointAddress("net.tcp://localhost:8000/Service"));
+                new NetTcpBinding(),
+                new EndpointAddress("net.tcp://localhost:8000/Service"));
+            
+            _locations = sharedLocations;
 
             _locationsView = CollectionViewSource.GetDefaultView(_locations);
 
             FormLocation = new Location("", "", "", "", "");
-
             AddCommand = new MyICommand(OnAdd);
-
-            LoadData();
-        }
-
-        private void LoadData()
-        {
-            try
-            {
-                var locations = _proxy.GetAllLocations();
-                _locations.Clear();
-                foreach (var location in locations)
-                {
-                    _locations.Add(location);
-                }
-            }
-            catch (CommunicationException ex)
-            {
-                ErrorMessage = $"Error loading data: {ex.Message}";
-            }
         }
 
         public ICollectionView LocationsView => _locationsView;
@@ -72,6 +50,8 @@ namespace AdvertManager.Client.ViewModels
         }
 
         public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
+
+        public MyICommand AddCommand { get; }
 
         private bool Validate()
         {
@@ -112,7 +92,6 @@ namespace AdvertManager.Client.ViewModels
             _locations.Add(FormLocation);
 
             FormLocation = new Location("", "", "", "", "");
-
             _locationsView.Refresh();
         }
     }

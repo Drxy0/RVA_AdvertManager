@@ -1,4 +1,5 @@
-﻿using AdvertManager.Client.Views;
+﻿using AdvertManager.Client.ViewModels;
+using AdvertManager.Client.Views;
 using System.Windows;
 
 namespace AdvertManager.Client.Helpers
@@ -23,6 +24,20 @@ namespace AdvertManager.Client.Helpers
                 MinWidth = 400,
                 MinHeight = 300
             };
+
+            if (dialogViewModel is AdvertisementFormViewModel viewModel)
+            {
+                // Store the original close action
+                var originalCloseAction = viewModel._onClose;
+
+                // Replace with an action that closes the window
+                viewModel._onClose = (result) =>
+                {
+                    window.DialogResult = result;
+                    window.Close();
+                    originalCloseAction?.Invoke(result);
+                };
+            }
 
             return window.ShowDialog();
         }

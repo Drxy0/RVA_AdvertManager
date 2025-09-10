@@ -1,11 +1,11 @@
-﻿using AdvertManager.Domain.Entities;
+﻿using AdvertManager.Client.Helpers;
+using AdvertManager.Domain.Entities;
 using AdvertManager.Domain.Enums;
-using AdvertManager.Client.Helpers;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows.Data;
 using System.ServiceModel;
+using System.Windows.Data;
 
 namespace AdvertManager.Client.ViewModels
 {
@@ -13,23 +13,30 @@ namespace AdvertManager.Client.ViewModels
     {
         private ClientProxy _proxy;
         private ObservableCollection<RealEstate> _realEstates;
+        private ObservableCollection<Location> _locations;
         private ICollectionView _realEstatesView;
         private RealEstate _formRealEstate;
         private string _areaInput;
         private string _yearBuiltInput;
         private string _errorMessage;
 
-        public ObservableCollection<Location> Locations { get; set; }
-        public ObservableCollection<RealEstateType> RealEstateTypes { get; set; }
+        public ObservableCollection<Location> Locations => _locations;
+        public ObservableCollection<RealEstateType> RealEstateTypes { get; }
+
         public MyICommand AddCommand { get; }
 
-        public RealEstatesViewModel()
+        public RealEstatesViewModel(ObservableCollection<RealEstate> sharedRealEstates, ObservableCollection<Location> sharedLocations)
         {
-            _realEstates = new ObservableCollection<RealEstate>();
-            Locations = new ObservableCollection<Location>();
             _proxy = new ClientProxy(
-                new System.ServiceModel.NetTcpBinding(),
-                new System.ServiceModel.EndpointAddress("net.tcp://localhost:8000/Service"));
+                new NetTcpBinding(),
+                new EndpointAddress("net.tcp://localhost:8000/Service"));
+
+            _realEstates = sharedRealEstates;
+            _locations = sharedLocations;
+
+            RealEstateTypes = new ObservableCollection<RealEstateType>(
+                (RealEstateType[])System.Enum.GetValues(typeof(RealEstateType))
+            );
 
             _realEstatesView = CollectionViewSource.GetDefaultView(_realEstates);
 
@@ -37,42 +44,11 @@ namespace AdvertManager.Client.ViewModels
             {
                 Type = RealEstateType.HOUSE,
                 IsAvailable = true,
-                Location = null
             };
 
             AreaInput = "";
             YearBuiltInput = "";
-
-            RealEstateTypes = new ObservableCollection<RealEstateType>(
-                (RealEstateType[])System.Enum.GetValues(typeof(RealEstateType))
-            );
-
             AddCommand = new MyICommand(OnAdd);
-
-            LoadData();
-        }
-
-        private void LoadData()
-        {
-            try
-            {
-                var locations = _proxy.GetAllLocations();
-                Locations.Clear();
-                foreach (var location in locations)
-                    Locations.Add(location);
-
-                if (Locations.Any())
-                    FormRealEstate.Location = Locations.First();
-
-                var realEstates = _proxy.GetAllRealEstates();
-                _realEstates.Clear();
-                foreach (var realEstate in realEstates)
-                    _realEstates.Add(realEstate);
-            }
-            catch (CommunicationException ex)
-            {
-                ErrorMessage = $"Error loading data: {ex.Message}";
-            }
         }
 
         public ICollectionView RealEstatesView => _realEstatesView;
@@ -169,7 +145,7 @@ namespace AdvertManager.Client.ViewModels
             YearBuiltInput = "";
             FormRealEstate.Type = RealEstateType.HOUSE;
             FormRealEstate.IsAvailable = true;
-            FormRealEstate.Location = Locations.FirstOrDefault();
+            FormRealEstate.Location = _locations.FirstOrDefault();
 
             _realEstatesView.Refresh();
         }

@@ -115,6 +115,7 @@ namespace AdvertManager.Server.Service
             {
                 new Advertisement
                 {
+                    Id = 1,
                     Title = "Flat in the city centre",
                     Description = "Two-bedroom flat, 60m², renovated, excellent location.",
                     Price = 85000,
@@ -122,6 +123,7 @@ namespace AdvertManager.Server.Service
                     ExpirationDate = DateTime.Now.AddMonths(1),
                     Publisher = new Publisher
                     {
+                        Id = 1,
                         FirstName = "John",
                         LastName = "Doe",
                         ContactNumber = "+44 7700 900123"
@@ -137,11 +139,12 @@ namespace AdvertManager.Server.Service
                             postalCode: "SW1A 1AA",
                             street: "Oxford Street",
                             streetNumber: "221B"
-                        )
-                    )
+                        ) { Id = 1 }
+                    ) { Id = 1 }
                 },
                 new Advertisement
                 {
+                    Id = 2,
                     Title = "House with a garden",
                     Description = "Family house, 120m², large garden, quiet neighbourhood.",
                     Price = 150000,
@@ -149,6 +152,7 @@ namespace AdvertManager.Server.Service
                     ExpirationDate = DateTime.Now.AddMonths(1),
                     Publisher = new Publisher
                     {
+                        Id = 2,
                         FirstName = "Emily",
                         LastName = "Clark",
                         ContactNumber = "+44 7700 900456"
@@ -164,11 +168,12 @@ namespace AdvertManager.Server.Service
                             postalCode: "M1 1AE",
                             street: "King Street",
                             streetNumber: "42"
-                        )
-                    )
+                        ) { Id = 2 }
+                    ) { Id = 2 }
                 },
                 new Advertisement
                 {
+                    Id = 3,
                     Title = "Office space to let",
                     Description = "Modern office space, 45m², fully furnished, near public transport.",
                     Price = 500,
@@ -176,6 +181,7 @@ namespace AdvertManager.Server.Service
                     ExpirationDate = DateTime.Now.AddMonths(1),
                     Publisher = new Publisher
                     {
+                        Id = 3,
                         FirstName = "Oliver",
                         LastName = "Brown",
                         ContactNumber = "+44 7700 900789"
@@ -191,8 +197,8 @@ namespace AdvertManager.Server.Service
                             postalCode: "B1 1AA",
                             street: "High Street",
                             streetNumber: "7C"
-                        )
-                    )
+                        ) { Id = 3 }
+                    ) { Id = 3 }
                 }
             };
 

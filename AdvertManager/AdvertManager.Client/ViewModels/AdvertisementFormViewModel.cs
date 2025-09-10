@@ -1,6 +1,8 @@
 ﻿using AdvertManager.Client.Helpers;
 using AdvertManager.Domain.Entities;
 using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 
 namespace AdvertManager.Client.ViewModels
@@ -8,7 +10,7 @@ namespace AdvertManager.Client.ViewModels
     public class AdvertisementFormViewModel : BindableBase
     {
         private readonly Action<Advertisement> _onSave;
-        private readonly Action _onCancel;
+        internal Action<bool> _onClose;
         private Advertisement _advertisement;
         private bool _isEditMode;
 
@@ -16,17 +18,26 @@ namespace AdvertManager.Client.ViewModels
         private string _priceError;
         private string _expirationDateError;
 
-        public AdvertisementFormViewModel(Action<Advertisement> onSave, Action onCancel, bool isEditMode = false)
+        private ClientProxy _proxy;
+
+        public AdvertisementFormViewModel(Action<Advertisement> onSave, Action<bool> onClose, bool isEditMode = false)
         {
             _onSave = onSave;
-            _onCancel = onCancel;
+            _onClose = onClose;
             _isEditMode = isEditMode;
+
+            _proxy = new ClientProxy(
+                new System.ServiceModel.NetTcpBinding(),
+                new System.ServiceModel.EndpointAddress("net.tcp://localhost:8000/Service"));
 
             Advertisement = new Advertisement
             {
                 CreatedAt = DateTime.Now,
             };
-            
+
+            LoadPublishers();
+            LoadRealEstates();
+
             SaveCommand = new MyICommand(OnSave);
             CancelCommand = new MyICommand(OnCancel);
         }
@@ -41,6 +52,51 @@ namespace AdvertManager.Client.ViewModels
         {
             get => _isEditMode;
             set => SetProperty(ref _isEditMode, value);
+        }
+
+        // Dropdown collections
+        public ObservableCollection<Publisher> Publishers { get; } = new ObservableCollection<Publisher>();
+        public ObservableCollection<RealEstate> RealEstates { get; } = new ObservableCollection<RealEstate>();
+
+        // Selected items
+        private Publisher _selectedPublisher;
+        public Publisher SelectedPublisher
+        {
+            get => _selectedPublisher;
+            set
+            {
+                SetProperty(ref _selectedPublisher, value);
+                Advertisement.Publisher = value;
+            }
+        }
+
+        private RealEstate _selectedRealEstate;
+        public RealEstate SelectedRealEstate
+        {
+            get => _selectedRealEstate;
+            set
+            {
+                SetProperty(ref _selectedRealEstate, value);
+                Advertisement.RealEstate = value;
+            }
+        }
+
+        private void LoadPublishers()
+        {
+            Publishers.Clear();
+            foreach (var pub in _proxy.GetAllPublishers())
+            {
+                Publishers.Add(pub);
+            }
+        }
+
+        private void LoadRealEstates()
+        {
+            RealEstates.Clear();
+            foreach (var re in _proxy.GetAllRealEstates())
+            {
+                RealEstates.Add(re);
+            }
         }
 
         // Error properties
@@ -134,11 +190,12 @@ namespace AdvertManager.Client.ViewModels
                 return;
 
             _onSave?.Invoke(Advertisement);
+            _onClose?.Invoke(true);
         }
 
         private void OnCancel()
         {
-            _onCancel?.Invoke();
+            _onClose?.Invoke(false);
         }
     }
 }

@@ -12,45 +12,32 @@ namespace AdvertManager.Client.ViewModels
     public class PublishersViewModel : BindableBase
     {
         private ClientProxy _proxy;
-        private ObservableCollection<Publisher> _publishers;
-        private ICollectionView _publishersView;
         private Publisher _formPublisher;
         private string _errorMessage;
+        private ICollectionView _publishersView;
 
-        public ObservableCollection<Publisher> Publishers => _publishers;
+        public ObservableCollection<Publisher> Publishers { get; }
+
         public MyICommand AddCommand { get; }
 
-        public PublishersViewModel()
+        // Constructor for injecting shared collection
+        public PublishersViewModel(ObservableCollection<Publisher> publishers)
         {
-            _publishers = new ObservableCollection<Publisher>();
             _proxy = new ClientProxy(
                 new NetTcpBinding(),
                 new EndpointAddress("net.tcp://localhost:8000/Service"));
 
-            _publishersView = CollectionViewSource.GetDefaultView(_publishers);
+            Publishers = publishers ?? new ObservableCollection<Publisher>();
+
+            _publishersView = CollectionViewSource.GetDefaultView(Publishers);
+
+            _proxy = new ClientProxy(
+                new System.ServiceModel.NetTcpBinding(),
+                new System.ServiceModel.EndpointAddress("net.tcp://localhost:8000/Service"));
 
             FormPublisher = new Publisher();
 
             AddCommand = new MyICommand(OnAdd);
-
-            LoadData();
-        }
-
-        private void LoadData()
-        {
-            try
-            {
-                var publishers = _proxy.GetAllPublishers();
-                _publishers.Clear();
-                foreach (var publisher in publishers)
-                {
-                    _publishers.Add(publisher);
-                }
-            }
-            catch (CommunicationException ex)
-            {
-                ErrorMessage = $"Error loading data: {ex.Message}";
-            }
         }
 
         public ICollectionView PublishersView => _publishersView;
@@ -97,14 +84,14 @@ namespace AdvertManager.Client.ViewModels
         {
             if (!Validate()) return;
 
-            var newId = _publishers.Any() ? _publishers.Max(p => p.Id) + 1 : 1;
+            int newId = Publishers.Any() ? Publishers.Max(p => p.Id) + 1 : 1;
             FormPublisher.Id = newId;
 
             _proxy.AddPublisher(FormPublisher);
 
-            _publishers.Add(FormPublisher);
-
+            Publishers.Add(FormPublisher);
             FormPublisher = new Publisher();
+
             _publishersView.Refresh();
         }
     }

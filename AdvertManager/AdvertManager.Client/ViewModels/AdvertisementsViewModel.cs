@@ -4,6 +4,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.ServiceModel;
 using System.Windows;
 using System.Windows.Data;
 
@@ -17,27 +18,39 @@ namespace AdvertManager.Client.ViewModels
         private string _searchText;
         private readonly IDialogService _dialogService;
 
+        public ObservableCollection<Publisher> Publishers { get; }
+        public ObservableCollection<RealEstate> RealEstates { get; }
+
         public MyICommand AddEntityCommand { get; private set; }
         public MyICommand UpdateEntityCommand { get; private set; }
         public MyICommand RemoveEntityCommand { get; private set; }
 
-        public AdvertisementsViewModel() : this(new DialogService())
+        private Advertisement _selectedAdvertisement;
+        public Advertisement SelectedAdvertisement
         {
+            get => _selectedAdvertisement;
+            set
+            {
+                SetProperty(ref _selectedAdvertisement, value);
+                UpdateEntityCommand.RaiseCanExecuteChanged();
+                RemoveEntityCommand.RaiseCanExecuteChanged();
+            }
         }
 
-        public AdvertisementsViewModel(IDialogService dialogService)
+        public AdvertisementsViewModel(
+            ObservableCollection<Advertisement> advertisements,
+            ObservableCollection<Publisher> publishers,
+            ObservableCollection<RealEstate> realEstates,
+            IDialogService dialogService = null)
         {
-            _dialogService = dialogService;
-            _advertisements = new ObservableCollection<Advertisement>();
-
             _proxy = new ClientProxy(
-                new System.ServiceModel.NetTcpBinding(),
-                new System.ServiceModel.EndpointAddress("net.tcp://localhost:8000/Service"));
+                new NetTcpBinding(),
+                new EndpointAddress("net.tcp://localhost:8000/Service"));
 
-            if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-            {
-                LoadData();
-            }
+            _dialogService = dialogService ?? new DialogService();
+            _advertisements = advertisements ?? new ObservableCollection<Advertisement>();
+            Publishers = publishers ?? new ObservableCollection<Publisher>();
+            RealEstates = realEstates ?? new ObservableCollection<RealEstate>();
 
             _advertisementsView = CollectionViewSource.GetDefaultView(_advertisements);
             _advertisementsView.Filter = FilterAdvertisements;
@@ -59,30 +72,18 @@ namespace AdvertManager.Client.ViewModels
             }
         }
 
-        private Advertisement _selectedAdvertisement;
-        public Advertisement SelectedAdvertisement
-        {
-            get => _selectedAdvertisement;
-            set
-            {
-                SetProperty(ref _selectedAdvertisement, value);
-                UpdateEntityCommand.RaiseCanExecuteChanged();
-                RemoveEntityCommand.RaiseCanExecuteChanged();
-            }
-        }
-
-        public void OnAdd()
+        private void OnAdd()
         {
             var formViewModel = new AdvertisementFormViewModel(
                 OnSaveAdvertisement,
-                () => { /* Cancel logic if needed */ },
+                (result) => { /* Optional: do something on close */ },
                 isEditMode: false);
 
-            var result = _dialogService.ShowDialog(formViewModel, "Add New Advertisement");
+            var dialogResult = _dialogService.ShowDialog(formViewModel, "Add New Advertisement");
 
-            if (result == true)
+            if (dialogResult == true)
             {
-                LoadData(); // Refresh the data after adding
+                _advertisementsView.Refresh();
             }
         }
 
@@ -92,28 +93,27 @@ namespace AdvertManager.Client.ViewModels
 
             var formViewModel = new AdvertisementFormViewModel(
                 OnUpdateAdvertisement,
-                () => { /* Cancel logic */ },
+                (result) => { /* Optional: do something on close */ },
                 isEditMode: true)
             {
                 Advertisement = SelectedAdvertisement
             };
 
-            _dialogService.ShowDialog(formViewModel, "Edit Advertisement");
-        }
+            var dialogResult = _dialogService.ShowDialog(formViewModel, "Edit Advertisement");
 
+            if (dialogResult == true)
+            {
+                _advertisementsView.Refresh();
+            }
+        }
 
         private void OnSaveAdvertisement(Advertisement advertisement)
         {
             try
             {
-                // Set creation date for new advertisements
                 advertisement.CreatedAt = DateTime.Now;
-
-                _proxy.AddAdvertisement(advertisement);
                 _advertisements.Add(advertisement);
 
-                // Close the dialog
-                Application.Current.Windows.OfType<Window>().LastOrDefault()?.Close();
             }
             catch (Exception ex)
             {
@@ -126,14 +126,9 @@ namespace AdvertManager.Client.ViewModels
         {
             try
             {
-                // Preserve the original creation date when updating
-                var originalCreatedAt = SelectedAdvertisement.CreatedAt;
-                advertisement.CreatedAt = originalCreatedAt;
+                advertisement.CreatedAt = SelectedAdvertisement.CreatedAt;
+                _advertisementsView.Refresh();
 
-                _proxy.UpdateAdvertisement(advertisement);
-                LoadData(); // Refresh data
-
-                Application.Current.Windows.OfType<Window>().LastOrDefault()?.Close();
             }
             catch (Exception ex)
             {
@@ -154,24 +149,11 @@ namespace AdvertManager.Client.ViewModels
 
             if (result == MessageBoxResult.Yes)
             {
-                try
-                {
-                    _proxy.DeleteAdvertisement(SelectedAdvertisement);
-                    _advertisements.Remove(SelectedAdvertisement);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error deleting advertisement: {ex.Message}", "Error",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                _advertisements.Remove(SelectedAdvertisement);
             }
         }
 
-        private bool CanModify()
-        {
-            return SelectedAdvertisement != null;
-        }
-
+        private bool CanModify() => SelectedAdvertisement != null;
 
         private bool FilterAdvertisements(object obj)
         {
@@ -205,16 +187,6 @@ namespace AdvertManager.Client.ViewModels
             }
 
             return matches;
-        }
-
-        private void LoadData()
-        {
-            var ads = _proxy.GetAllAdvertisements();
-            _advertisements.Clear();
-            foreach (var ad in ads)
-            {
-                _advertisements.Add(ad);
-            }
         }
     }
 }

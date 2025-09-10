@@ -12,45 +12,36 @@ namespace AdvertManager.Client.ViewModels
     public class NewspaperAdvertsViewModel : BindableBase
     {
         private ClientProxy _proxy;
-        private ObservableCollection<NewspaperAdvertisement> _ads;
         private ICollectionView _adsView;
         private NewspaperAdvertisement _formAd;
         private string _errorMessage;
 
-        public ObservableCollection<NewspaperAdvertisement> Ads => _ads;
+        public ObservableCollection<NewspaperAdvertisement> Ads { get; }
+        public ObservableCollection<Publisher> Publishers { get; }
+
         public MyICommand AddCommand { get; }
 
-        public NewspaperAdvertsViewModel()
+        // Constructor for injecting shared collections
+        public NewspaperAdvertsViewModel(
+            ObservableCollection<NewspaperAdvertisement> newspaperAds,
+            ObservableCollection<Publisher> publishers)
         {
-            _ads = new ObservableCollection<NewspaperAdvertisement>();
             _proxy = new ClientProxy(
                 new NetTcpBinding(),
                 new EndpointAddress("net.tcp://localhost:8000/Service"));
 
-            _adsView = CollectionViewSource.GetDefaultView(_ads);
+            Ads = newspaperAds ?? new ObservableCollection<NewspaperAdvertisement>();
+            Publishers = publishers ?? new ObservableCollection<Publisher>();
+
+            _adsView = CollectionViewSource.GetDefaultView(Ads);
+
+            _proxy = new ClientProxy(
+                new System.ServiceModel.NetTcpBinding(),
+                new System.ServiceModel.EndpointAddress("net.tcp://localhost:8000/Service"));
 
             FormAd = new NewspaperAdvertisement("", "", "", "");
 
             AddCommand = new MyICommand(OnAdd);
-
-            LoadData();
-        }
-
-        private void LoadData()
-        {
-            try
-            {
-                var newspaperAdvertisements = _proxy.GetAllNewspaperAdvertisements();
-                _ads.Clear();
-                foreach (var newspaperAdvertisement in newspaperAdvertisements)
-                {
-                    _ads.Add(newspaperAdvertisement);
-                }
-            }
-            catch (CommunicationException ex)
-            {
-                ErrorMessage = $"Error loading data: {ex.Message}";
-            }
         }
 
         public ICollectionView AdsView => _adsView;
@@ -104,14 +95,14 @@ namespace AdvertManager.Client.ViewModels
         {
             if (!Validate()) return;
 
-            int newId = _ads.Any() ? _ads.Max(a => a.Id) + 1 : 1;
+            int newId = Ads.Any() ? Ads.Max(a => a.Id) + 1 : 1;
             FormAd.Id = newId;
 
             _proxy.AddNewspaperAdvertisement(FormAd);
 
-            _ads.Add(FormAd);
-
+            Ads.Add(FormAd);
             FormAd = new NewspaperAdvertisement("", "", "", "");
+
             _adsView.Refresh();
         }
     }
