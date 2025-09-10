@@ -19,7 +19,7 @@ namespace AdvertManager.Server.DataStorage
         public T Load<T>(string filePath)
         {
             if (!File.Exists(filePath))
-                throw new FileNotFoundException($"File not found: {filePath}");
+                return default;
 
             string json = File.ReadAllText(filePath);
             return JsonConvert.DeserializeObject<T>(json);

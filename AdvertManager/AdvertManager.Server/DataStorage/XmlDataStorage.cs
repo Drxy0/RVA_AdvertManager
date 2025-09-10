@@ -20,7 +20,7 @@ namespace AdvertManager.Server.DataStorage
         public T Load<T>(string filePath)
         {
             if (!File.Exists(filePath))
-                throw new FileNotFoundException($"File not found: {filePath}");
+                return default;
 
             var serializer = new XmlSerializer(typeof(T));
             using (var stream = new FileStream(filePath, FileMode.Open))
