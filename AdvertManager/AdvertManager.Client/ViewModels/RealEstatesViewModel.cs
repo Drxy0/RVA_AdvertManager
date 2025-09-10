@@ -4,8 +4,8 @@ using AdvertManager.Client.Helpers;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows.Data;
+using System.ServiceModel;
 
 namespace AdvertManager.Client.ViewModels
 {
@@ -21,27 +21,15 @@ namespace AdvertManager.Client.ViewModels
 
         public ObservableCollection<Location> Locations { get; set; }
         public ObservableCollection<RealEstateType> RealEstateTypes { get; set; }
-
         public MyICommand AddCommand { get; }
 
         public RealEstatesViewModel()
         {
             _realEstates = new ObservableCollection<RealEstate>();
+            Locations = new ObservableCollection<Location>();
             _proxy = new ClientProxy(
                 new System.ServiceModel.NetTcpBinding(),
                 new System.ServiceModel.EndpointAddress("net.tcp://localhost:8000/Service"));
-
-            //dummy data:
-            Locations = new ObservableCollection<Location>
-            {
-                new Location("Belgrade", "Serbia", "11000", "Vuka Karadzica", "10"){ Id = 1 },
-                new Location("Novi Sad", "Serbia", "21000", "Cara Lazara", "33"){ Id = 2 },
-                new Location("Niš", "Serbia", "18000", "Kralja Petra", "4"){ Id = 3 }
-            };
-
-            RealEstateTypes = new ObservableCollection<RealEstateType>(
-                (RealEstateType[])System.Enum.GetValues(typeof(RealEstateType))
-            );
 
             _realEstatesView = CollectionViewSource.GetDefaultView(_realEstates);
 
@@ -49,31 +37,43 @@ namespace AdvertManager.Client.ViewModels
             {
                 Type = RealEstateType.HOUSE,
                 IsAvailable = true,
-                Location = Locations[0]
+                Location = null
             };
 
             AreaInput = "";
             YearBuiltInput = "";
 
+            RealEstateTypes = new ObservableCollection<RealEstateType>(
+                (RealEstateType[])System.Enum.GetValues(typeof(RealEstateType))
+            );
+
             AddCommand = new MyICommand(OnAdd);
+
+            LoadData();
         }
 
-        //private void LoadData()
-        //{
-        //    var realEstates = _proxy.GetAllRealEstates();
-        //    _realEstates.Clear();
-        //    foreach (var realEstate in realEstates)
-        //    {
-        //        _realEstates.Add(realEstate);
-        //    }
-        //
-        //    var locations = _proxy.GetAllLocations();
-        //    Locations.Clear();
-        //    foreach (var location in locations)
-        //    {
-        //        Locations.Add(location);
-        //    }
-        //}
+        private void LoadData()
+        {
+            try
+            {
+                var locations = _proxy.GetAllLocations();
+                Locations.Clear();
+                foreach (var location in locations)
+                    Locations.Add(location);
+
+                if (Locations.Any())
+                    FormRealEstate.Location = Locations.First();
+
+                var realEstates = _proxy.GetAllRealEstates();
+                _realEstates.Clear();
+                foreach (var realEstate in realEstates)
+                    _realEstates.Add(realEstate);
+            }
+            catch (CommunicationException ex)
+            {
+                ErrorMessage = $"Error loading data: {ex.Message}";
+            }
+        }
 
         public ICollectionView RealEstatesView => _realEstatesView;
         public RealEstate SelectedRealEstate { get; set; }
@@ -163,14 +163,13 @@ namespace AdvertManager.Client.ViewModels
             };
 
             _proxy.AddRealEstate(realEstate);
-
             _realEstates.Add(realEstate);
 
             AreaInput = "";
             YearBuiltInput = "";
             FormRealEstate.Type = RealEstateType.HOUSE;
             FormRealEstate.IsAvailable = true;
-            FormRealEstate.Location = Locations[0];
+            FormRealEstate.Location = Locations.FirstOrDefault();
 
             _realEstatesView.Refresh();
         }

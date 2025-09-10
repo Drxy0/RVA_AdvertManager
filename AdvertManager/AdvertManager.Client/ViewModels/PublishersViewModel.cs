@@ -17,6 +17,9 @@ namespace AdvertManager.Client.ViewModels
         private Publisher _formPublisher;
         private string _errorMessage;
 
+        public ObservableCollection<Publisher> Publishers => _publishers;
+        public MyICommand AddCommand { get; }
+
         public PublishersViewModel()
         {
             _publishers = new ObservableCollection<Publisher>();
@@ -30,20 +33,25 @@ namespace AdvertManager.Client.ViewModels
 
             AddCommand = new MyICommand(OnAdd);
 
-            // Sample data
-            _publishers.Add(new Publisher { Id = 1, FirstName = "John", LastName = "Doe", ContactNumber = "1234567890" });
-            _publishers.Add(new Publisher { Id = 2, FirstName = "Jane", LastName = "Smith", ContactNumber = "0987654321" });
+            LoadData();
         }
 
-        //private void LoadData()
-        //{
-        //    var publishers = _proxy.GetAllPublishers();
-        //    _publishers.Clear();
-        //    foreach (var publisher in publishers)
-        //    {
-        //        _publishers.Add(publisher);
-        //    }
-        //}
+        private void LoadData()
+        {
+            try
+            {
+                var publishers = _proxy.GetAllPublishers();
+                _publishers.Clear();
+                foreach (var publisher in publishers)
+                {
+                    _publishers.Add(publisher);
+                }
+            }
+            catch (CommunicationException ex)
+            {
+                ErrorMessage = $"Error loading data: {ex.Message}";
+            }
+        }
 
         public ICollectionView PublishersView => _publishersView;
 
@@ -64,8 +72,6 @@ namespace AdvertManager.Client.ViewModels
         }
 
         public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
-
-        public MyICommand AddCommand { get; }
 
         private bool Validate()
         {

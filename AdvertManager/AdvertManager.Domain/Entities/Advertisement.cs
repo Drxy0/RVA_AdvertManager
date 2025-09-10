@@ -22,7 +22,6 @@ namespace AdvertManager.Domain.Entities
         {
             createdAt = DateTime.Now;
             observers = new List<IObserver>();
-            SetState(new ActiveState());
         }
 
         public int Id { get => id; set => id = value; }
@@ -46,9 +45,9 @@ namespace AdvertManager.Domain.Entities
 
         public void SetState(AdvertisementState state)
         {
-            this.state = state;
-            this.state.SetAdvertisement(this);
-            this.state.Handle();
+            //this.state = state;
+            //this.state.SetAdvertisement(this);
+            //this.state.Handle();
         }
 
         public decimal CalculatePricePerSquareMeter()

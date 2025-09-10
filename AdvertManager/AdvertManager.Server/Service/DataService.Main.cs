@@ -64,6 +64,9 @@ namespace AdvertManager.Server.Service
             {
                 _advertRepository.AddRange(loaded.Advertisements ?? new List<Advertisement>());
                 _publisherRepository.AddRange(loaded.Publishers ?? new List<Publisher>());
+                _realEstateRepository.AddRange(loaded.RealEstates ?? new List<RealEstate>());
+                _locationRepository.AddRange(loaded.Locations ?? new List<Location>());
+                _newspaperAdvertRepository.AddRange(loaded.NewspaperAdvertisements ?? new List<NewspaperAdvertisement>());
             }
 
             EnsureSeedData();
@@ -74,7 +77,10 @@ namespace AdvertManager.Server.Service
             var entities = new PersistedEntities
             {
                 Advertisements = _advertRepository.GetAll().ToList(),
-                Publishers = _publisherRepository.GetAll().ToList()
+                Publishers = _publisherRepository.GetAll().ToList(),
+                RealEstates = _realEstateRepository.GetAll().ToList(),
+                Locations = _locationRepository.GetAll().ToList(),
+                NewspaperAdvertisements = _newspaperAdvertRepository.GetAll().ToList()
             };
 
             _storage.Save(_filePath, entities);
