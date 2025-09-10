@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Data;
+using System.ServiceModel;
 
 namespace AdvertManager.Client.ViewModels
 {
@@ -16,6 +17,9 @@ namespace AdvertManager.Client.ViewModels
         private Location _formLocation;
         private string _errorMessage;
 
+        public ObservableCollection<Location> Locations => _locations;
+        public MyICommand AddCommand { get; }
+
         public LocationsViewModel()
         {
             _locations = new ObservableCollection<Location>();
@@ -23,34 +27,31 @@ namespace AdvertManager.Client.ViewModels
                 new System.ServiceModel.NetTcpBinding(),
                 new System.ServiceModel.EndpointAddress("net.tcp://localhost:8000/Service"));
 
-            //if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-            //{
-            //    LoadData();
-            //}
-            //dummy data:
-            _locations = new ObservableCollection<Location>
-            {
-                new Location("Belgrade", "Serbia", "11000", "Vuka Karadzica", "10"){ Id = 1},
-                new Location("Novi Sad", "Serbia", "21000", "Cara Lazara", "33"){ Id = 2},
-                new Location("Niš", "Serbia", "18000", "Kralja Petra", "4"){ Id = 3}
-            };
-
             _locationsView = CollectionViewSource.GetDefaultView(_locations);
 
             FormLocation = new Location("", "", "", "", "");
 
             AddCommand = new MyICommand(OnAdd);
+
+            LoadData();
         }
 
-        //private void LoadData()
-        //{
-        //    var locations = _proxy.GetAllLocations();
-        //    _locations.Clear();
-        //    foreach (var location in locations)
-        //    {
-        //        _locations.Add(location);
-        //    }
-        //}
+        private void LoadData()
+        {
+            try
+            {
+                var locations = _proxy.GetAllLocations();
+                _locations.Clear();
+                foreach (var location in locations)
+                {
+                    _locations.Add(location);
+                }
+            }
+            catch (CommunicationException ex)
+            {
+                ErrorMessage = $"Error loading data: {ex.Message}";
+            }
+        }
 
         public ICollectionView LocationsView => _locationsView;
 
@@ -71,8 +72,6 @@ namespace AdvertManager.Client.ViewModels
         }
 
         public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
-
-        public MyICommand AddCommand { get; }
 
         private bool Validate()
         {

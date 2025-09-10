@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Data;
+using System.ServiceModel;
 
 namespace AdvertManager.Client.ViewModels
 {
@@ -23,37 +24,34 @@ namespace AdvertManager.Client.ViewModels
         {
             _ads = new ObservableCollection<NewspaperAdvertisement>();
             _proxy = new ClientProxy(
-                new System.ServiceModel.NetTcpBinding(),
-                new System.ServiceModel.EndpointAddress("net.tcp://localhost:8000/Service"));
-
-            //if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-            //{
-            //    LoadData();
-            //}
-
-            // Dummy data
-            _ads = new ObservableCollection<NewspaperAdvertisement>
-            {
-                new NewspaperAdvertisement("Sale: Old Car", "Selling a used car in good condition", "John Doe", "1234567890") { Id = 1 },
-                new NewspaperAdvertisement("House Rent", "Spacious 3-bedroom house for rent", "Jane Smith", "9876543210") { Id = 2 }
-            };
+                new NetTcpBinding(),
+                new EndpointAddress("net.tcp://localhost:8000/Service"));
 
             _adsView = CollectionViewSource.GetDefaultView(_ads);
 
             FormAd = new NewspaperAdvertisement("", "", "", "");
 
             AddCommand = new MyICommand(OnAdd);
+
+            LoadData();
         }
 
-        //private void LoadData()
-        //{
-        //    var newspaperAdvertisements = _proxy.GetAllNewspaperAdvertisements();
-        //    _ads.Clear();
-        //    foreach (var newspaperAdvertisement in newspaperAdvertisements)
-        //    {
-        //        _ads.Add(newspaperAdvertisement);
-        //    }
-        //}
+        private void LoadData()
+        {
+            try
+            {
+                var newspaperAdvertisements = _proxy.GetAllNewspaperAdvertisements();
+                _ads.Clear();
+                foreach (var newspaperAdvertisement in newspaperAdvertisements)
+                {
+                    _ads.Add(newspaperAdvertisement);
+                }
+            }
+            catch (CommunicationException ex)
+            {
+                ErrorMessage = $"Error loading data: {ex.Message}";
+            }
+        }
 
         public ICollectionView AdsView => _adsView;
 
@@ -110,7 +108,7 @@ namespace AdvertManager.Client.ViewModels
             FormAd.Id = newId;
 
             _proxy.AddNewspaperAdvertisement(FormAd);
-            
+
             _ads.Add(FormAd);
 
             FormAd = new NewspaperAdvertisement("", "", "", "");

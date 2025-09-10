@@ -7,9 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.ServiceModel;
 
 namespace AdvertManager.Server.Service
 {
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public partial class DataService : IDataService
     {
         private readonly AdvertisementRepository _advertRepository = new AdvertisementRepository();
@@ -21,13 +23,7 @@ namespace AdvertManager.Server.Service
         private IDataStorage _storage;
         private string _filePath;
 
-        public DataService()
-        {
-            _storage = new JsonDataStorage();
-            _filePath = "entities.json";
-
-            LoadData();
-        }
+        public DataService(){}
 
         public DataService(IDataStorage storage, string filePath)
         {
@@ -53,32 +49,59 @@ namespace AdvertManager.Server.Service
                     _storage = new CsvDataStorage();
                     break;
             }
+            LoadData();
         }
 
         private void LoadData()
         {
-            if (!File.Exists(_filePath)) return;
+            PersistedEntities loaded = null;
 
-            var loaded = _storage.Load<PersistedEntities>(_filePath);
+            if (_storage is CsvDataStorage csvStorage)
+            {
+                string folderPath = Path.GetDirectoryName(_filePath);
+                loaded = csvStorage.LoadEntities(folderPath);
+            }
+            else
+            {
+                if (!File.Exists(_filePath)) return;
+                loaded = _storage.Load<PersistedEntities>(_filePath);
+            }
+
             if (loaded != null)
             {
                 _advertRepository.AddRange(loaded.Advertisements ?? new List<Advertisement>());
                 _publisherRepository.AddRange(loaded.Publishers ?? new List<Publisher>());
+                _realEstateRepository.AddRange(loaded.RealEstates ?? new List<RealEstate>());
+                _locationRepository.AddRange(loaded.Locations ?? new List<Location>());
+                _newspaperAdvertRepository.AddRange(loaded.NewspaperAdvertisements ?? new List<NewspaperAdvertisement>());
             }
 
             EnsureSeedData();
         }
+
 
         private void SaveData()
         {
             var entities = new PersistedEntities
             {
                 Advertisements = _advertRepository.GetAll().ToList(),
-                Publishers = _publisherRepository.GetAll().ToList()
+                Publishers = _publisherRepository.GetAll().ToList(),
+                RealEstates = _realEstateRepository.GetAll().ToList(),
+                Locations = _locationRepository.GetAll().ToList(),
+                NewspaperAdvertisements = _newspaperAdvertRepository.GetAll().ToList()
             };
 
-            _storage.Save(_filePath, entities);
+            if (_storage is CsvDataStorage csvStorage)
+            {
+                string folderPath = Path.GetDirectoryName(_filePath);
+                csvStorage.SaveEntities(folderPath, entities);
+            }
+            else
+            {
+                _storage.Save(_filePath, entities);
+            }
         }
+
 
         /// <summary>
         /// Add 3 instances of primary class (Advertisement) if there are none in file.

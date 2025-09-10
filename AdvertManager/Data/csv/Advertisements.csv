@@ -1,0 +1,4 @@
+Id,Title,Description,CreatedAt,ExpirationDate,Price,Id,FirstName,LastName,ContactNumber,Id,AreaInSquareMeters,Type,YearBuilt,IsAvailable,Id,City,Country,PostalCode,Street,StreetNumber
+0,Flat in the city centre,"Two-bedroom flat, 60m², renovated, excellent location.",09/10/2025 13:32:35,10/10/2025 13:32:35,85000,0,John,Doe,+44 7700 900123,0,60,FLAT,2005,True,0,London,United Kingdom,SW1A 1AA,Oxford Street,221B
+0,House with a garden,"Family house, 120m², large garden, quiet neighbourhood.",09/10/2025 13:32:35,10/10/2025 13:32:35,150000,0,Emily,Clark,+44 7700 900456,0,120,HOUSE,1998,True,0,Manchester,United Kingdom,M1 1AE,King Street,42
+0,Office space to let,"Modern office space, 45m², fully furnished, near public transport.",09/10/2025 13:32:35,10/10/2025 13:32:35,500,0,Oliver,Brown,+44 7700 900789,0,45,OFFICE,2015,False,0,Birmingham,United Kingdom,B1 1AA,High Street,7C

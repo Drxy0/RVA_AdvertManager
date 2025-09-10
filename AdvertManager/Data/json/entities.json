@@ -1,0 +1,15 @@
+{
+  "Advertisements": [],
+  "Publishers": [],
+  "RealEstates": [],
+  "Locations": [],
+  "NewspaperAdvertisements": [
+    {
+      "Id": 1,
+      "Title": "Great deal",
+      "Description": "This is JSON",
+      "PublisherFullName": "Jack Jack",
+      "PhoneNumber": "123"
+    }
+  ]
+}
