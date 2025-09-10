@@ -1,5 +1,7 @@
 ﻿using AdvertManager.Domain.Entities;
 using AdvertManager.Domain.Enums;
+using AdvertManager.Server.DataStorage;
+using AdvertManager.Server.Repositories;
 using AdvertManager.Server.Service.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -10,17 +12,72 @@ namespace AdvertManager.Server.Service
 {
     public partial class DataService : IDataService
     {
+        private readonly AdvertisementRepository _advertRepository = new AdvertisementRepository();
+        private readonly PublisherRepository _publisherRepository = new PublisherRepository();
+        private readonly RealEstateRepository _realEstateRepository = new RealEstateRepository();
+        private readonly LocationRepository _locationRepository = new LocationRepository();
+        private readonly NewspaperAdvertisementRepository _newspaperAdvertRepository = new NewspaperAdvertisementRepository();
+
+        private IDataStorage _storage;
+        private string _filePath;
+
+        public DataService()
+        {
+            _storage = new JsonDataStorage();
+            _filePath = "entities.json";
+
+            LoadData();
+        }
+
+        public DataService(IDataStorage storage, string filePath)
+        {
+            _storage = storage;
+            _filePath = filePath;
+
+            LoadData();
+        }
+
+        public void SetStorage(IStorageType type, string filePath)
+        {
+            _filePath = filePath;
+
+            switch(type)
+            {
+                case IStorageType.JSON:
+                    _storage = new JsonDataStorage();
+                    break;
+                case IStorageType.XML:
+                    _storage = new XmlDataStorage();
+                    break;
+                case IStorageType.CSV:
+                    _storage = new CsvDataStorage();
+                    break;
+            }
+        }
+
         private void LoadData()
         {
             if (!File.Exists(_filePath)) return;
 
-            var loaded = _storage.Load<List<Advertisement>>(_filePath);
+            var loaded = _storage.Load<PersistedEntities>(_filePath);
             if (loaded != null)
             {
-                _advertRepository.AddRange(loaded);
+                _advertRepository.AddRange(loaded.Advertisements ?? new List<Advertisement>());
+                _publisherRepository.AddRange(loaded.Publishers ?? new List<Publisher>());
             }
-            
+
             EnsureSeedData();
+        }
+
+        private void SaveData()
+        {
+            var entities = new PersistedEntities
+            {
+                Advertisements = _advertRepository.GetAll().ToList(),
+                Publishers = _publisherRepository.GetAll().ToList()
+            };
+
+            _storage.Save(_filePath, entities);
         }
 
         /// <summary>

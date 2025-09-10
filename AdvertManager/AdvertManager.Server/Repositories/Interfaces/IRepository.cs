@@ -8,6 +8,7 @@ namespace AdvertManager.Server.Repositories
         void AddRange(IEnumerable<T> entities);
         void Update(T entity);
         void Delete(T entity);
+        T Get(int id);
         IEnumerable<T> GetAll();
     }
 }

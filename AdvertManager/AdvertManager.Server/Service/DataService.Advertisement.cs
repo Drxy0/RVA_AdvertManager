@@ -8,44 +8,16 @@ namespace AdvertManager.Server.Service
 {
     public partial class DataService : IDataService
     {
-        // TODO: Note, repository pattern might be overkill here since its simple CRUD.
-        // Might want to remove it for simplicity even though it would be the 'correct' way of doing things.
-        private readonly AdvertisementRepository _advertRepository;
-        private IDataStorage _storage;
-        private string _filePath;
-
-        public DataService()
-        {
-            _advertRepository = new AdvertisementRepository();
-            _storage = new JsonDataStorage();
-            _filePath = "entities.json";
-
-            LoadData();
-        }
-
-        public DataService(IDataStorage storage, string filePath)
-        {
-            _advertRepository = new AdvertisementRepository();
-            _storage = storage;
-            _filePath = filePath;
-
-            LoadData();
-        }
-
-        public void SetStorage(IDataStorage storage, string filePath)
-        {
-            _storage = storage;
-            _filePath = filePath;
-        }
-
         public void AddAdvertisement(Advertisement ad)
         {
             _advertRepository.Add(ad);
+            SaveData();
         }
 
         public void UpdateAdvertisement(Advertisement ad)
         {
             _advertRepository.Update(ad);
+            SaveData();
         }
 
         public void DeleteAdvertisement(Advertisement ad)
@@ -53,6 +25,7 @@ namespace AdvertManager.Server.Service
             if (ad != null)
             {
                 _advertRepository.Delete(ad);
+                SaveData();
             }
         }
 
@@ -60,6 +33,5 @@ namespace AdvertManager.Server.Service
         {
             return _advertRepository.GetAll();
         }
-
     }
 }

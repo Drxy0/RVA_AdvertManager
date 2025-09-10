@@ -48,6 +48,9 @@ namespace AdvertManager.Server.Repositories
             return _locations;
         }
 
-
+        public Location Get(int id)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

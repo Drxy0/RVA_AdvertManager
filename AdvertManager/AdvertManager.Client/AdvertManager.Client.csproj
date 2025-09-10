@@ -62,7 +62,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ClientProxy.cs" />
+    <Compile Include="Services\ClientProxy.cs" />
     <Compile Include="Helpers\BindableBase.cs" />
     <Compile Include="Helpers\DialogService.cs" />
     <Compile Include="Helpers\IDialogService.cs" />

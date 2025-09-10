@@ -46,6 +46,9 @@ namespace AdvertManager.Server.Repositories
            return _advertisements;
         }
 
-
+        public Advertisement Get(int id)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

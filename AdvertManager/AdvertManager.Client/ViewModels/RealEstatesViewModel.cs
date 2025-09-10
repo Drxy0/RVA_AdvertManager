@@ -31,10 +31,6 @@ namespace AdvertManager.Client.ViewModels
                 new System.ServiceModel.NetTcpBinding(),
                 new System.ServiceModel.EndpointAddress("net.tcp://localhost:8000/Service"));
 
-            //if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-            //{
-            //    LoadData();
-            //}
             //dummy data:
             Locations = new ObservableCollection<Location>
             {
@@ -112,7 +108,6 @@ namespace AdvertManager.Client.ViewModels
 
         public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
-
         private bool Validate()
         {
             if (string.IsNullOrWhiteSpace(AreaInput) ||
@@ -157,16 +152,7 @@ namespace AdvertManager.Client.ViewModels
 
             int newId = _realEstates.Any() ? _realEstates.Max(r => r.Id) + 1 : 1;
 
-            //_proxy.AddRealEstate(new RealEstate
-            //{
-            //    Id = newId,
-            //    AreaInSquareMeters = double.Parse(AreaInput),
-            //    Type = FormRealEstate.Type,
-            //    YearBuilt = int.Parse(YearBuiltInput),
-            //    IsAvailable = FormRealEstate.IsAvailable,
-            //    Location = FormRealEstate.Location
-            //});
-            _realEstates.Add(new RealEstate
+            RealEstate realEstate = new RealEstate
             {
                 Id = newId,
                 AreaInSquareMeters = double.Parse(AreaInput),
@@ -174,7 +160,11 @@ namespace AdvertManager.Client.ViewModels
                 YearBuilt = int.Parse(YearBuiltInput),
                 IsAvailable = FormRealEstate.IsAvailable,
                 Location = FormRealEstate.Location
-            });
+            };
+
+            _proxy.AddRealEstate(realEstate);
+
+            _realEstates.Add(realEstate);
 
             AreaInput = "";
             YearBuiltInput = "";

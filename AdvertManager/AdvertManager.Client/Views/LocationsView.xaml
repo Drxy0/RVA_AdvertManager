@@ -25,7 +25,6 @@
         <DataGrid Grid.Column="0"
                   AutoGenerateColumns="False"
                   ItemsSource="{Binding LocationsView}"
-                  SelectedItem="{Binding SelectedLocation}"
                   Margin="10"
                   SelectionMode="Single"
                   IsReadOnly="True">
@@ -40,7 +39,7 @@
         </DataGrid>
 
         <!-- Form -->
-        <StackPanel Grid.Column="1" Margin="5">
+        <StackPanel Grid.Column="1" Margin="5, 0, 15, 0">
             <TextBlock Text="Add New Location" FontWeight="Bold" Margin="0,0,0,10"/>
 
             <TextBlock Text="City:" Margin="0,5,0,2"/>

@@ -7,6 +7,8 @@ namespace AdvertManager.Domain.Entities
 		private string publisherFullName;
         private string phoneNumber;
 
+        public NewspaperAdvertisement() { }
+
         public NewspaperAdvertisement(string title, string description, string publisherFullName, string phoneNumber)
         {
             this.title = title;

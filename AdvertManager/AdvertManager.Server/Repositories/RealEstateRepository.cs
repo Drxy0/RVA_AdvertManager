@@ -46,5 +46,10 @@ namespace AdvertManager.Server.Repositories
         {
             return _realEstates;
         }
+
+        public RealEstate Get(int id)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

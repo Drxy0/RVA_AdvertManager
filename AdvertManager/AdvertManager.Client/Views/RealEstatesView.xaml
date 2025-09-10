@@ -41,7 +41,7 @@
         </DataGrid>
 
         <!-- Form -->
-        <StackPanel Grid.Column="1" Margin="5">
+        <StackPanel Grid.Column="1" Margin="5, 0, 15, 0">
             <TextBlock Text="Add New Real Estate" FontWeight="Bold" Margin="0,0,0,10"/>
 
             <TextBlock Text="Area (m²):" Margin="0,5,0,2"/>

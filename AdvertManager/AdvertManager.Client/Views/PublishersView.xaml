@@ -25,7 +25,6 @@
         <DataGrid Grid.Column="0"
                   AutoGenerateColumns="False"
                   ItemsSource="{Binding PublishersView}"
-                  SelectedItem="{Binding SelectedPublisher}"
                   Margin="10"
                   SelectionMode="Single"
                   IsReadOnly="True">
@@ -38,7 +37,7 @@
         </DataGrid>
 
         <!-- Form -->
-        <StackPanel Grid.Column="1" Margin="5">
+        <StackPanel Grid.Column="1" Margin="5, 0, 15, 0">
             <TextBlock Text="Add New Publisher" FontWeight="Bold" Margin="0,0,0,10"/>
 
             <TextBlock Text="First Name:" Margin="0,5,0,2"/>

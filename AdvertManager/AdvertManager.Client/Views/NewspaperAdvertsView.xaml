@@ -37,7 +37,7 @@
         </DataGrid>
 
         <!-- Form -->
-        <StackPanel Grid.Column="1" Margin="5">
+        <StackPanel Grid.Column="1" Margin="5, 0, 15, 0">
             <TextBlock Text="Add New Advertisement" FontWeight="Bold" Margin="0,0,0,10"/>
 
             <TextBlock Text="Title:" Margin="0,5,0,2"/>

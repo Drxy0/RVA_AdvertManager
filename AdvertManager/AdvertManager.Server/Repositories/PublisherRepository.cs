@@ -12,7 +12,17 @@ namespace AdvertManager.Server.Repositories
         {
             _publishers.Add(entity);
         }
-        
+
+        public Publisher Get(int id)
+        {
+            return _publishers.FirstOrDefault(p => p.Id == id);
+        }
+
+        public IEnumerable<Publisher> GetAll()
+        {
+            return _publishers;
+        }
+
         public void AddRange(IEnumerable<Publisher> entities)
         {
             _publishers.AddRange(entities);
@@ -20,11 +30,7 @@ namespace AdvertManager.Server.Repositories
 
         public void Update(Publisher entity)
         {
-            var existing = _publishers.FirstOrDefault(p =>
-                p.FirstName == entity.FirstName &&
-                p.LastName == entity.LastName &&
-                p.ContactNumber == entity.ContactNumber
-            );
+            var existing = _publishers.FirstOrDefault(p => p.Id == entity.Id);
 
             if (existing != null)
             {
@@ -37,11 +43,6 @@ namespace AdvertManager.Server.Repositories
         public void Delete(Publisher entity)
         {
             _publishers.Remove(entity);
-        }
-
-        public IEnumerable<Publisher> GetAll()
-        {
-            return _publishers;
         }
     }
 }

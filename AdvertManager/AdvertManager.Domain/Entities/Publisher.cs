@@ -1,5 +1,3 @@
-using System.ComponentModel;
-
 namespace AdvertManager.Domain.Entities
 {
     public class Publisher
@@ -8,6 +6,16 @@ namespace AdvertManager.Domain.Entities
         private string firstName;
         private string lastName;
         private string contactNumber;
+
+        public Publisher() { }
+
+        public Publisher(int id, string firstName, string lastName, string contactNumber)
+        {
+            this.id = id;
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.contactNumber = contactNumber;
+        }
 
         public int Id { get => id; set => id = value; }
         public string FirstName { get => firstName; set => firstName = value; }

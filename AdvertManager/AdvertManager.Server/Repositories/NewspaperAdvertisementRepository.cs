@@ -44,5 +44,10 @@ namespace AdvertManager.Server.Repositories
         {
             return _ads;
         }
+
+        public NewspaperAdvertisement Get(int id)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

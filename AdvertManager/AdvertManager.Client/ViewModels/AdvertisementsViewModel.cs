@@ -207,7 +207,6 @@ namespace AdvertManager.Client.ViewModels
             return matches;
         }
 
-
         private void LoadData()
         {
             var ads = _proxy.GetAllAdvertisements();

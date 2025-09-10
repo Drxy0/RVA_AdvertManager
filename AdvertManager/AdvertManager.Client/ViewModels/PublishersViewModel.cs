@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
-using System.Windows;
+using System.ServiceModel;
 
 namespace AdvertManager.Client.ViewModels
 {
@@ -21,13 +21,8 @@ namespace AdvertManager.Client.ViewModels
         {
             _publishers = new ObservableCollection<Publisher>();
             _proxy = new ClientProxy(
-                new System.ServiceModel.NetTcpBinding(),
-                new System.ServiceModel.EndpointAddress("net.tcp://localhost:8000/Service"));
-
-            //if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-            //{
-            //    LoadData();
-            //}
+                new NetTcpBinding(),
+                new EndpointAddress("net.tcp://localhost:8000/Service"));
 
             _publishersView = CollectionViewSource.GetDefaultView(_publishers);
 
@@ -82,9 +77,9 @@ namespace AdvertManager.Client.ViewModels
                 return false;
             }
 
-            if (!FormPublisher.ContactNumber.All(char.IsDigit))
+            if (!FormPublisher.ContactNumber.Any(char.IsDigit))
             {
-                ErrorMessage = "Contact number must contain only digits.";
+                ErrorMessage = "Contact number must contain digits.";
                 return false;
             }
 
@@ -99,10 +94,11 @@ namespace AdvertManager.Client.ViewModels
             var newId = _publishers.Any() ? _publishers.Max(p => p.Id) + 1 : 1;
             FormPublisher.Id = newId;
 
-            //_proxy.AddPublisher(FormPublisher);
-            _publishers.Add(FormPublisher);
-            FormPublisher = new Publisher();
+            _proxy.AddPublisher(FormPublisher);
 
+            _publishers.Add(FormPublisher);
+
+            FormPublisher = new Publisher();
             _publishersView.Refresh();
         }
     }

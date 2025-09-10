@@ -109,11 +109,11 @@ namespace AdvertManager.Client.ViewModels
             int newId = _ads.Any() ? _ads.Max(a => a.Id) + 1 : 1;
             FormAd.Id = newId;
 
-            //_proxy.AddNewspaperAdvertisement(FormAd);
+            _proxy.AddNewspaperAdvertisement(FormAd);
+            
             _ads.Add(FormAd);
 
             FormAd = new NewspaperAdvertisement("", "", "", "");
-
             _adsView.Refresh();
         }
     }
