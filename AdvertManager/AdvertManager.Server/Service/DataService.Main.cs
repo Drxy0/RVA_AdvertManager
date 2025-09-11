@@ -61,9 +61,8 @@ namespace AdvertManager.Server.Service
                 string folderPath = Path.GetDirectoryName(_filePath);
                 loaded = csvStorage.LoadEntities(folderPath);
             }
-            else
+            else if (File.Exists(_filePath))
             {
-                if (!File.Exists(_filePath)) return;
                 loaded = _storage.Load<PersistedEntities>(_filePath);
             }
 
@@ -76,8 +75,12 @@ namespace AdvertManager.Server.Service
                 _newspaperAdvertRepository.AddRange(loaded.NewspaperAdvertisements ?? new List<NewspaperAdvertisement>());
             }
 
-            EnsureSeedData();
+            if (loaded == null || !_advertRepository.GetAll().Any())
+            {
+                EnsureSeedData();
+            }
         }
+
 
 
         private void SaveData()
@@ -105,6 +108,7 @@ namespace AdvertManager.Server.Service
 
         /// <summary>
         /// Add 3 instances of primary class (Advertisement) if there are none in file.
+        /// Ensures all related entities (Publisher, RealEstate, Location) are also added.
         /// </summary>
         private void EnsureSeedData()
         {
@@ -120,7 +124,7 @@ namespace AdvertManager.Server.Service
                     Description = "Two-bedroom flat, 60m², renovated, excellent location.",
                     Price = 85000,
                     CreatedAt = DateTime.Now,
-                    ExpirationDate = DateTime.Now.AddMonths(1),
+                    ExpirationDate = DateTime.Now.AddMonths(1).AddHours(5),
                     Publisher = new Publisher
                     {
                         Id = 1,
@@ -149,7 +153,7 @@ namespace AdvertManager.Server.Service
                     Description = "Family house, 120m², large garden, quiet neighbourhood.",
                     Price = 150000,
                     CreatedAt = DateTime.Now,
-                    ExpirationDate = DateTime.Now.AddMonths(1),
+                    ExpirationDate = DateTime.Now.AddDays(15),
                     Publisher = new Publisher
                     {
                         Id = 2,
@@ -178,7 +182,7 @@ namespace AdvertManager.Server.Service
                     Description = "Modern office space, 45m², fully furnished, near public transport.",
                     Price = 500,
                     CreatedAt = DateTime.Now,
-                    ExpirationDate = DateTime.Now.AddMonths(1),
+                    ExpirationDate = DateTime.Now.AddMonths(2),
                     Publisher = new Publisher
                     {
                         Id = 3,
@@ -202,7 +206,46 @@ namespace AdvertManager.Server.Service
                 }
             };
 
+            var dummyNewspaperAdverts = new List<NewspaperAdvertisement>
+            {
+                new NewspaperAdvertisement
+                {
+                    Id = 200,
+                    Title = "Charming Studio Flat Available",
+                    Description = "Cozy 25m² studio in central Liverpool. Perfect for students or professionals.",
+                    PublisherFullName = "John Doe",
+                    PhoneNumber = "+44 7700 222333"
+                },
+                new NewspaperAdvertisement
+                {
+                    Id = 201,
+                    Title = "Spacious Countryside House for Rent",
+                    Description = "4-bedroom house with garden and garage, located in the quiet suburbs of York.",
+                    PublisherFullName = "Emily Clark",
+                    PhoneNumber = "+44 7700 444555"
+                },
+            };
+
             _advertRepository.AddRange(dummyAdverts);
+
+            _publisherRepository.AddRange(dummyAdverts
+                .Where(a => a.Publisher != null)
+                .Select(a => a.Publisher));
+
+            _realEstateRepository.AddRange(dummyAdverts
+                .Where(a => a.RealEstate != null)
+                .Select(a => a.RealEstate));
+
+            _locationRepository.AddRange(dummyAdverts
+                .Where(a => a.RealEstate?.Location != null)
+                .Select(a => a.RealEstate.Location));
+
+            if (!_newspaperAdvertRepository.GetAll().Any())
+            {
+                _newspaperAdvertRepository.AddRange(dummyNewspaperAdverts);
+            }
+
+            SaveData();
         }
     }
 }

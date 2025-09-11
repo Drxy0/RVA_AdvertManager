@@ -3,7 +3,6 @@ using AdvertManager.Domain.Entities;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
 
 namespace AdvertManager.Client.ViewModels
 {
@@ -20,7 +19,11 @@ namespace AdvertManager.Client.ViewModels
 
         private ClientProxy _proxy;
 
-        public AdvertisementFormViewModel(Action<Advertisement> onSave, Action<bool> onClose, bool isEditMode = false)
+        public AdvertisementFormViewModel(
+            Action<Advertisement> onSave, 
+            Action<bool> onClose, 
+            bool isEditMode = false, 
+            Advertisement existingAd = null)
         {
             _onSave = onSave;
             _onClose = onClose;
@@ -30,13 +33,21 @@ namespace AdvertManager.Client.ViewModels
                 new System.ServiceModel.NetTcpBinding(),
                 new System.ServiceModel.EndpointAddress("net.tcp://localhost:8000/Service"));
 
-            Advertisement = new Advertisement
-            {
-                CreatedAt = DateTime.Now,
-            };
+            Advertisement = existingAd ?? new Advertisement { CreatedAt = DateTime.Now };
 
             LoadPublishers();
             LoadRealEstates();
+
+            if (_isEditMode && Advertisement.Publisher != null)
+            {
+                SelectedPublisher = Publishers.FirstOrDefault(p => p.Id == Advertisement.Publisher.Id);
+            }
+
+            if (_isEditMode && Advertisement.RealEstate != null)
+            {
+                SelectedRealEstate = RealEstates.FirstOrDefault(r => r.Id == Advertisement.RealEstate.Id);
+            }
+
 
             SaveCommand = new MyICommand(OnSave);
             CancelCommand = new MyICommand(OnCancel);

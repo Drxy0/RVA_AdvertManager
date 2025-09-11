@@ -1,7 +1,9 @@
 ﻿using AdvertManager.Client.Helpers;
 using AdvertManager.Domain.Entities;
+using System;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Linq;
 using System.Threading;
 
 namespace AdvertManager.Client.ViewModels
@@ -109,8 +111,37 @@ namespace AdvertManager.Client.ViewModels
                         Advertisements.Add(ad);
 
                     NewspaperAdverts.Clear();
-                    foreach (var newsAd in _proxy.GetAllNewspaperAdvertisements())
+                    foreach (NewspaperAdvertisement newsAd in _proxy.GetAllNewspaperAdvertisements())
+                    {
                         NewspaperAdverts.Add(newsAd);
+
+                        // Try to match a Publisher by full name
+                        var matchedPublisher = Publishers.FirstOrDefault(p =>
+                            $"{p.FirstName} {p.LastName}".Equals(newsAd.PublisherFullName, StringComparison.OrdinalIgnoreCase));
+
+                        // If no match by name, try by phone number
+                        if (matchedPublisher == null)
+                        {
+                            matchedPublisher = Publishers.FirstOrDefault(p =>
+                                p.ContactNumber.Equals(newsAd.PhoneNumber, StringComparison.OrdinalIgnoreCase));
+                        }
+
+                        var adapter = new NewspaperAdvertisementAdapter(newsAd);
+                        
+                        if (matchedPublisher != null)
+                        {
+                            adapter.Publisher = new Publisher
+                            {
+                                Id = matchedPublisher.Id,
+                                FirstName = matchedPublisher.FirstName,
+                                LastName = matchedPublisher.LastName,
+                                ContactNumber = matchedPublisher.ContactNumber
+                            };
+                        }
+
+                        // Add the adapter to the main Advertisements collection
+                        Advertisements.Add(adapter);
+                    }
 
                     return; // success, exit
                 }

@@ -3,7 +3,6 @@ using AdvertManager.Domain.Entities;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Data;
@@ -93,11 +92,9 @@ namespace AdvertManager.Client.ViewModels
 
             var formViewModel = new AdvertisementFormViewModel(
                 OnUpdateAdvertisement,
-                (result) => { /* Optional: do something on close */ },
-                isEditMode: true)
-            {
-                Advertisement = SelectedAdvertisement
-            };
+                (result) => { /* Optional */ },
+                isEditMode: true,
+                SelectedAdvertisement);
 
             var dialogResult = _dialogService.ShowDialog(formViewModel, "Edit Advertisement");
 
