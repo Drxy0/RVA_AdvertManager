@@ -107,5 +107,12 @@
       <PublisherFullName>David Davidson</PublisherFullName>
       <PhoneNumber>2113232</PhoneNumber>
     </NewspaperAdvertisement>
+    <NewspaperAdvertisement>
+      <Id>3</Id>
+      <Title>XML</Title>
+      <Description>XML</Description>
+      <PublisherFullName>XML xml</PublisherFullName>
+      <PhoneNumber>1234</PhoneNumber>
+    </NewspaperAdvertisement>
   </NewspaperAdvertisements>
 </PersistedEntities>
