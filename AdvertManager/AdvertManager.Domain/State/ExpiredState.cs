@@ -7,10 +7,15 @@ namespace AdvertManager.Domain.State
 {
     public class ExpiredState : AdvertisementState
     {
+        public override string Name => "Expired";
         public override void Handle()
         {
-            advertisement.RealEstate.IsAvailable = false;
-            advertisement.NotifyObservers(); 
+            if (advertisement.RealEstate != null)
+            {
+                advertisement.RealEstate.IsAvailable = false;
+            }
+            advertisement.NotifyObservers();
+
             Task.Delay(30000).ContinueWith(_ =>
             {
                 advertisement.SetState(new ActiveState());

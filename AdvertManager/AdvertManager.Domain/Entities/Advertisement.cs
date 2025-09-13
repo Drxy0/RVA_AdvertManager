@@ -33,6 +33,7 @@ namespace AdvertManager.Domain.Entities
         public Publisher Publisher { get => publisher; set => publisher = value; }
         public RealEstate RealEstate { get => realEstate; set => realEstate = value; }
         public AdvertisementState State => state;
+        public string StateName { get; set; }
 
         public void ExtendExpired(int days)
         {
@@ -45,9 +46,10 @@ namespace AdvertManager.Domain.Entities
 
         public void SetState(AdvertisementState state)
         {
-            //this.state = state;
-            //this.state.SetAdvertisement(this);
-            //this.state.Handle();
+            this.state = state;
+            this.state.SetAdvertisement(this);
+            StateName = state.Name;
+            state.Handle();
         }
 
         public decimal CalculatePricePerSquareMeter()
