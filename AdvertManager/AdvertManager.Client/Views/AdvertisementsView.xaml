@@ -39,6 +39,7 @@
                 <DataGridTextColumn Header="Expires" Binding="{Binding ExpirationDate}" Width="Auto" />
                 <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher.Id}" Width="*" />
                 <DataGridTextColumn Header="Real Estate" Binding="{Binding RealEstate.Id}" Width="*" />
+                <DataGridTextColumn Header="State" Binding="{Binding StateName}" Width="Auto"/>
             </DataGrid.Columns>
         </DataGrid>
 
