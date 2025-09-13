@@ -67,12 +67,8 @@ namespace AdvertManager.Server.Service
                 _logger.Debug("Loading data started.");
                 PersistedEntities loaded = null;
 
-                if (_storage is CsvDataStorage csvStorage)
-                {
-                    string folderPath = Path.GetDirectoryName(_filePath);
-                    loaded = csvStorage.LoadEntities(folderPath);
-                }
-                else if (File.Exists(_filePath))
+                if ((_storage is CsvDataStorage && Directory.Exists(_filePath)) ||
+                    (!(_storage is CsvDataStorage) && File.Exists(_filePath)))
                 {
                     loaded = _storage.Load<PersistedEntities>(_filePath);
                 }
@@ -103,6 +99,7 @@ namespace AdvertManager.Server.Service
 
         private void SaveData()
         {
+
             try
             {
                 _logger.Debug("Saving data started.");
@@ -116,17 +113,7 @@ namespace AdvertManager.Server.Service
                     NewspaperAdvertisements = _newspaperAdvertRepository.GetAll().ToList()
                 };
 
-                if (_storage is CsvDataStorage csvStorage)
-                {
-                    string folderPath = Path.GetDirectoryName(_filePath);
-                    csvStorage.SaveEntities(folderPath, entities);
-                }
-                else
-                {
-                    _storage.Save(_filePath, entities);
-                }
-
-                _logger.Info("Data successfully saved.");
+                _storage.Save(_filePath, entities);
             }
             catch (Exception ex)
             {

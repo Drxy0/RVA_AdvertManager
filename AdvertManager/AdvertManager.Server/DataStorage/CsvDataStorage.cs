@@ -10,35 +10,14 @@ namespace AdvertManager.Server.DataStorage
 {
     public class CsvDataStorage : IDataStorage
     {
-        public void Save<T>(string filePath, T data)
+        public void Save<T>(string folderPath, T data)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
-            if (data is PersistedEntities entities)
-            {
-                string folderPath = Path.GetDirectoryName(filePath);
-                SaveEntities(folderPath, entities);
-            }
-            else
-            {
-                throw new InvalidOperationException("CSVDataStorage only supports saving PersistedEntities.");
-            }
-        }
+            if (!(data is PersistedEntities entities))
+                throw new InvalidOperationException("CsvDataStorage only supports PersistedEntities.");
 
-        public T Load<T>(string filePath)
-        {
-            if (typeof(T) != typeof(PersistedEntities))
-                throw new InvalidOperationException("CSVDataStorage only supports loading PersistedEntities.");
-
-            string folderPath = Path.GetDirectoryName(filePath);
-            var entities = LoadEntities(folderPath);
-
-            return (T)(object)entities;
-        }
-
-        public void SaveEntities(string folderPath, PersistedEntities entities)
-        {
             Directory.CreateDirectory(folderPath);
 
             SaveList(Path.Combine(folderPath, "Advertisements.csv"), entities.Advertisements);
@@ -48,18 +27,23 @@ namespace AdvertManager.Server.DataStorage
             SaveList(Path.Combine(folderPath, "NewspaperAdvertisements.csv"), entities.NewspaperAdvertisements);
         }
 
-        public PersistedEntities LoadEntities(string folderPath)
+        public T Load<T>(string folderPath)
         {
-            var entities = new PersistedEntities();
+            if (typeof(T) != typeof(PersistedEntities))
+                throw new InvalidOperationException("CsvDataStorage only supports PersistedEntities.");
 
-            entities.Advertisements = LoadList<Advertisement>(Path.Combine(folderPath, "Advertisements.csv"));
-            entities.Publishers = LoadList<Publisher>(Path.Combine(folderPath, "Publishers.csv"));
-            entities.RealEstates = LoadList<RealEstate>(Path.Combine(folderPath, "RealEstates.csv"));
-            entities.Locations = LoadList<Location>(Path.Combine(folderPath, "Locations.csv"));
-            entities.NewspaperAdvertisements = LoadList<NewspaperAdvertisement>(Path.Combine(folderPath, "NewspaperAdvertisements.csv"));
+            var entities = new PersistedEntities
+            {
+                Advertisements = LoadList<Advertisement>(Path.Combine(folderPath, "Advertisements.csv")),
+                Publishers = LoadList<Publisher>(Path.Combine(folderPath, "Publishers.csv")),
+                RealEstates = LoadList<RealEstate>(Path.Combine(folderPath, "RealEstates.csv")),
+                Locations = LoadList<Location>(Path.Combine(folderPath, "Locations.csv")),
+                NewspaperAdvertisements = LoadList<NewspaperAdvertisement>(Path.Combine(folderPath, "NewspaperAdvertisements.csv"))
+            };
 
-            return entities;
+            return (T)(object)entities;
         }
+
         private void SaveList<T>(string filePath, List<T> list)
         {
             if (list == null || !list.Any())
@@ -71,6 +55,7 @@ namespace AdvertManager.Server.DataStorage
                 csv.WriteRecords(list);
             }
         }
+
         private List<T> LoadList<T>(string filePath) where T : new()
         {
             if (!File.Exists(filePath) || new FileInfo(filePath).Length == 0)
