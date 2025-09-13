@@ -1,8 +1,8 @@
 ﻿using AdvertManager.Domain.Entities;
-using AdvertManager.Server.DataStorage;
-using AdvertManager.Server.Repositories;
 using AdvertManager.Server.Service.Interfaces;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AdvertManager.Server.Service
 {
@@ -10,28 +10,69 @@ namespace AdvertManager.Server.Service
     {
         public void AddAdvertisement(Advertisement ad)
         {
-            _advertRepository.Add(ad);
-            SaveData();
+            try
+            {
+                _advertRepository.Add(ad);
+                SaveData();
+                _logger.Info($"Advertisement added: {ad.Title} (ID: {ad.Id})");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("Error adding advertisement", ex);
+                throw;
+            }
         }
 
         public void UpdateAdvertisement(Advertisement ad)
         {
-            _advertRepository.Update(ad);
-            SaveData();
+            try
+            {
+                _advertRepository.Update(ad);
+                SaveData();
+                _logger.Info($"Advertisement updated: {ad.Title} (ID: {ad.Id})");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("Error updating advertisement", ex);
+                throw;
+            }
         }
 
         public void DeleteAdvertisement(Advertisement ad)
         {
-            if (ad != null)
+            try
             {
-                _advertRepository.Delete(ad);
-                SaveData();
+                if (ad != null)
+                {
+                    _advertRepository.Delete(ad);
+                    SaveData();
+                    _logger.Info($"Advertisement deleted: {ad.Title} (ID: {ad.Id})");
+                }
+                else
+                {
+                    _logger.Warn("DeleteAdvertisement called with null parameter.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("Error deleting advertisement", ex);
+                throw;
             }
         }
 
         public IEnumerable<Advertisement> GetAllAdvertisements()
         {
-            return _advertRepository.GetAll();
+            try
+            {
+                var ads = _advertRepository.GetAll();
+                _logger.Info($"Retrieved {ads?.Count() ?? 0} advertisements.");
+                return ads;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("Error retrieving advertisements", ex);
+                throw;
+            }
         }
     }
 }

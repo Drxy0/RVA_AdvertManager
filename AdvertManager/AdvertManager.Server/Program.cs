@@ -1,6 +1,7 @@
 ﻿using AdvertManager.Server.DataStorage;
 using AdvertManager.Server.Service;
 using AdvertManager.Server.Service.Interfaces;
+using log4net;
 using System;
 using System.IO;
 using System.ServiceModel;
@@ -10,9 +11,12 @@ namespace AdvertManager.Server
     internal class Program
     {
         private static ServiceHost serviceHost;
+        private static readonly ILog _logger = LogManager.GetLogger(typeof(Program));
 
         static void Main(string[] args)
         {
+            log4net.Config.XmlConfigurator.Configure();
+
             IStorageType storageType;
 
             while (true)
@@ -49,6 +53,8 @@ namespace AdvertManager.Server
             string dataFolder = Path.Combine(projectRoot, "Data");
             Directory.CreateDirectory(dataFolder);
 
+            _logger.Info("Server starting...");
+
             string storageFolder = "";
             string filePath = "";
             switch (storageType)
@@ -78,11 +84,14 @@ namespace AdvertManager.Server
             string address = "net.tcp://localhost:8000/Service";
             serviceHost.AddServiceEndpoint(typeof(IDataService), binding, address);
 
+            _logger.Info($"ServiceHost opened with {storageType} storage at '{filePath}'.");
             Console.WriteLine($"ServiceHost opened with {storageType} storage at '{filePath}'.");
             serviceHost.Open();
 
             Console.WriteLine("Press ENTER to stop the server...");
             Console.ReadLine();
+
+            _logger.Info("Server stopped.");
         }
     }
 }
