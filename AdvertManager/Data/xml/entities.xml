@@ -2,26 +2,26 @@
 <PersistedEntities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Advertisements>
     <Advertisement>
-      <Id>0</Id>
+      <Id>1</Id>
       <Title>Flat in the city centre</Title>
       <Description>Two-bedroom flat, 60m², renovated, excellent location.</Description>
-      <CreatedAt>2025-09-10T13:08:26.7563931+02:00</CreatedAt>
-      <ExpirationDate>2025-10-10T13:08:26.7563931+02:00</ExpirationDate>
+      <CreatedAt>2025-09-13T21:55:44.2920556+02:00</CreatedAt>
+      <ExpirationDate>2025-10-14T02:55:44.2920556+02:00</ExpirationDate>
       <Price>85000</Price>
       <Publisher>
-        <Id>0</Id>
+        <Id>1</Id>
         <FirstName>John</FirstName>
         <LastName>Doe</LastName>
         <ContactNumber>+44 7700 900123</ContactNumber>
       </Publisher>
       <RealEstate>
-        <Id>0</Id>
+        <Id>1</Id>
         <AreaInSquareMeters>60</AreaInSquareMeters>
         <Type>FLAT</Type>
         <YearBuilt>2005</YearBuilt>
-        <IsAvailable>true</IsAvailable>
+        <IsAvailable>false</IsAvailable>
         <Location>
-          <Id>0</Id>
+          <Id>1</Id>
           <City>London</City>
           <Country>United Kingdom</Country>
           <PostalCode>SW1A 1AA</PostalCode>
@@ -29,28 +29,29 @@
           <StreetNumber>221B</StreetNumber>
         </Location>
       </RealEstate>
+      <StateName>Rented</StateName>
     </Advertisement>
     <Advertisement>
-      <Id>0</Id>
+      <Id>2</Id>
       <Title>House with a garden</Title>
       <Description>Family house, 120m², large garden, quiet neighbourhood.</Description>
-      <CreatedAt>2025-09-10T13:08:26.7570658+02:00</CreatedAt>
-      <ExpirationDate>2025-10-10T13:08:26.7570658+02:00</ExpirationDate>
+      <CreatedAt>2025-09-13T21:55:44.2920556+02:00</CreatedAt>
+      <ExpirationDate>2025-09-28T21:55:44.2920556+02:00</ExpirationDate>
       <Price>150000</Price>
       <Publisher>
-        <Id>0</Id>
+        <Id>2</Id>
         <FirstName>Emily</FirstName>
         <LastName>Clark</LastName>
         <ContactNumber>+44 7700 900456</ContactNumber>
       </Publisher>
       <RealEstate>
-        <Id>0</Id>
+        <Id>2</Id>
         <AreaInSquareMeters>120</AreaInSquareMeters>
         <Type>HOUSE</Type>
         <YearBuilt>1998</YearBuilt>
-        <IsAvailable>true</IsAvailable>
+        <IsAvailable>false</IsAvailable>
         <Location>
-          <Id>0</Id>
+          <Id>2</Id>
           <City>Manchester</City>
           <Country>United Kingdom</Country>
           <PostalCode>M1 1AE</PostalCode>
@@ -58,28 +59,29 @@
           <StreetNumber>42</StreetNumber>
         </Location>
       </RealEstate>
+      <StateName>Rented</StateName>
     </Advertisement>
     <Advertisement>
-      <Id>0</Id>
+      <Id>3</Id>
       <Title>Office space to let</Title>
       <Description>Modern office space, 45m², fully furnished, near public transport.</Description>
-      <CreatedAt>2025-09-10T13:08:26.7570658+02:00</CreatedAt>
-      <ExpirationDate>2025-10-10T13:08:26.7570658+02:00</ExpirationDate>
+      <CreatedAt>2025-09-13T21:55:44.2920556+02:00</CreatedAt>
+      <ExpirationDate>2025-11-13T21:55:44.2920556+01:00</ExpirationDate>
       <Price>500</Price>
       <Publisher>
-        <Id>0</Id>
+        <Id>3</Id>
         <FirstName>Oliver</FirstName>
         <LastName>Brown</LastName>
         <ContactNumber>+44 7700 900789</ContactNumber>
       </Publisher>
       <RealEstate>
-        <Id>0</Id>
+        <Id>3</Id>
         <AreaInSquareMeters>45</AreaInSquareMeters>
         <Type>OFFICE</Type>
         <YearBuilt>2015</YearBuilt>
         <IsAvailable>false</IsAvailable>
         <Location>
-          <Id>0</Id>
+          <Id>3</Id>
           <City>Birmingham</City>
           <Country>United Kingdom</Country>
           <PostalCode>B1 1AA</PostalCode>
@@ -87,32 +89,176 @@
           <StreetNumber>7C</StreetNumber>
         </Location>
       </RealEstate>
+      <StateName>Rented</StateName>
+    </Advertisement>
+    <Advertisement>
+      <Id>0</Id>
+      <Title>Great flat</Title>
+      <Description>Cheap flat</Description>
+      <CreatedAt>2025-09-13T21:56:20.7174666+02:00</CreatedAt>
+      <ExpirationDate>2026-01-01T00:00:00</ExpirationDate>
+      <Price>10</Price>
+      <Publisher>
+        <Id>1</Id>
+        <FirstName>John</FirstName>
+        <LastName>Doe</LastName>
+        <ContactNumber>+44 7700 900123</ContactNumber>
+      </Publisher>
+      <RealEstate>
+        <Id>1</Id>
+        <AreaInSquareMeters>60</AreaInSquareMeters>
+        <Type>FLAT</Type>
+        <YearBuilt>2005</YearBuilt>
+        <IsAvailable>false</IsAvailable>
+        <Location>
+          <Id>1</Id>
+          <City>London</City>
+          <Country>United Kingdom</Country>
+          <PostalCode>SW1A 1AA</PostalCode>
+          <Street>Oxford Street</Street>
+          <StreetNumber>221B</StreetNumber>
+        </Location>
+      </RealEstate>
+      <StateName>Rented</StateName>
+    </Advertisement>
+    <Advertisement>
+      <Id>0</Id>
+      <Title>asasddas</Title>
+      <Description>dasdasdsaads</Description>
+      <CreatedAt>2025-09-13T21:59:48.9587575+02:00</CreatedAt>
+      <ExpirationDate>3223-01-01T00:00:00</ExpirationDate>
+      <Price>3212</Price>
+      <Publisher>
+        <Id>1</Id>
+        <FirstName>John</FirstName>
+        <LastName>Doe</LastName>
+        <ContactNumber>+44 7700 900123</ContactNumber>
+      </Publisher>
+      <RealEstate>
+        <Id>2</Id>
+        <AreaInSquareMeters>120</AreaInSquareMeters>
+        <Type>HOUSE</Type>
+        <YearBuilt>1998</YearBuilt>
+        <IsAvailable>true</IsAvailable>
+        <Location>
+          <Id>2</Id>
+          <City>Manchester</City>
+          <Country>United Kingdom</Country>
+          <PostalCode>M1 1AE</PostalCode>
+          <Street>King Street</Street>
+          <StreetNumber>42</StreetNumber>
+        </Location>
+      </RealEstate>
+      <StateName>Active</StateName>
     </Advertisement>
   </Advertisements>
-  <Publishers />
-  <RealEstates />
-  <Locations />
+  <Publishers>
+    <Publisher>
+      <Id>1</Id>
+      <FirstName>John</FirstName>
+      <LastName>Doe</LastName>
+      <ContactNumber>+44 7700 900123</ContactNumber>
+    </Publisher>
+    <Publisher>
+      <Id>2</Id>
+      <FirstName>Emily</FirstName>
+      <LastName>Clark</LastName>
+      <ContactNumber>+44 7700 900456</ContactNumber>
+    </Publisher>
+    <Publisher>
+      <Id>3</Id>
+      <FirstName>Oliver</FirstName>
+      <LastName>Brown</LastName>
+      <ContactNumber>+44 7700 900789</ContactNumber>
+    </Publisher>
+  </Publishers>
+  <RealEstates>
+    <RealEstate>
+      <Id>1</Id>
+      <AreaInSquareMeters>60</AreaInSquareMeters>
+      <Type>FLAT</Type>
+      <YearBuilt>2005</YearBuilt>
+      <IsAvailable>true</IsAvailable>
+      <Location>
+        <Id>1</Id>
+        <City>London</City>
+        <Country>United Kingdom</Country>
+        <PostalCode>SW1A 1AA</PostalCode>
+        <Street>Oxford Street</Street>
+        <StreetNumber>221B</StreetNumber>
+      </Location>
+    </RealEstate>
+    <RealEstate>
+      <Id>2</Id>
+      <AreaInSquareMeters>120</AreaInSquareMeters>
+      <Type>HOUSE</Type>
+      <YearBuilt>1998</YearBuilt>
+      <IsAvailable>true</IsAvailable>
+      <Location>
+        <Id>2</Id>
+        <City>Manchester</City>
+        <Country>United Kingdom</Country>
+        <PostalCode>M1 1AE</PostalCode>
+        <Street>King Street</Street>
+        <StreetNumber>42</StreetNumber>
+      </Location>
+    </RealEstate>
+    <RealEstate>
+      <Id>3</Id>
+      <AreaInSquareMeters>45</AreaInSquareMeters>
+      <Type>OFFICE</Type>
+      <YearBuilt>2015</YearBuilt>
+      <IsAvailable>false</IsAvailable>
+      <Location>
+        <Id>3</Id>
+        <City>Birmingham</City>
+        <Country>United Kingdom</Country>
+        <PostalCode>B1 1AA</PostalCode>
+        <Street>High Street</Street>
+        <StreetNumber>7C</StreetNumber>
+      </Location>
+    </RealEstate>
+  </RealEstates>
+  <Locations>
+    <Location>
+      <Id>1</Id>
+      <City>London</City>
+      <Country>United Kingdom</Country>
+      <PostalCode>SW1A 1AA</PostalCode>
+      <Street>Oxford Street</Street>
+      <StreetNumber>221B</StreetNumber>
+    </Location>
+    <Location>
+      <Id>2</Id>
+      <City>Manchester</City>
+      <Country>United Kingdom</Country>
+      <PostalCode>M1 1AE</PostalCode>
+      <Street>King Street</Street>
+      <StreetNumber>42</StreetNumber>
+    </Location>
+    <Location>
+      <Id>3</Id>
+      <City>Birmingham</City>
+      <Country>United Kingdom</Country>
+      <PostalCode>B1 1AA</PostalCode>
+      <Street>High Street</Street>
+      <StreetNumber>7C</StreetNumber>
+    </Location>
+  </Locations>
   <NewspaperAdvertisements>
     <NewspaperAdvertisement>
-      <Id>1</Id>
-      <Title>Hey</Title>
-      <Description>This is XML</Description>
-      <PublisherFullName>Mark Graham</PublisherFullName>
-      <PhoneNumber>12323</PhoneNumber>
+      <Id>200</Id>
+      <Title>Charming Studio Flat Available</Title>
+      <Description>Cozy 25m² studio in central Liverpool. Perfect for students or professionals.</Description>
+      <PublisherFullName>John Doe</PublisherFullName>
+      <PhoneNumber>+44 7700 222333</PhoneNumber>
     </NewspaperAdvertisement>
     <NewspaperAdvertisement>
-      <Id>2</Id>
-      <Title>Hi</Title>
-      <Description>wsaddsa</Description>
-      <PublisherFullName>David Davidson</PublisherFullName>
-      <PhoneNumber>2113232</PhoneNumber>
-    </NewspaperAdvertisement>
-    <NewspaperAdvertisement>
-      <Id>3</Id>
-      <Title>XML</Title>
-      <Description>XML</Description>
-      <PublisherFullName>XML xml</PublisherFullName>
-      <PhoneNumber>1234</PhoneNumber>
+      <Id>201</Id>
+      <Title>Spacious Countryside House for Rent</Title>
+      <Description>4-bedroom house with garden and garage, located in the quiet suburbs of York.</Description>
+      <PublisherFullName>Emily Clark</PublisherFullName>
+      <PhoneNumber>+44 7700 444555</PhoneNumber>
     </NewspaperAdvertisement>
   </NewspaperAdvertisements>
 </PersistedEntities>

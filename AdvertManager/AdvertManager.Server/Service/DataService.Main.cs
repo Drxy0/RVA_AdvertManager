@@ -1,5 +1,6 @@
 ﻿using AdvertManager.Domain.Entities;
 using AdvertManager.Domain.Enums;
+using AdvertManager.Domain.State;
 using AdvertManager.Server.DataStorage;
 using AdvertManager.Server.Repositories;
 using AdvertManager.Server.Service.Interfaces;
@@ -81,6 +82,19 @@ namespace AdvertManager.Server.Service
                     _locationRepository.AddRange(loaded.Locations ?? new List<Location>());
                     _newspaperAdvertRepository.AddRange(loaded.NewspaperAdvertisements ?? new List<NewspaperAdvertisement>());
 
+                    foreach (var ad in _advertRepository.GetAll())
+                    {
+                        switch (ad.StateName)
+                        {
+                            case "Active": ad.SetState(new ActiveState()); break;
+                            case "Rented": ad.SetState(new RentedState()); break;
+                            case "Expired": ad.SetState(new ExpiredState()); break;
+                            default: ad.SetState(new ActiveState()); break;
+                        }
+                        ad.NotifyObservers();
+                    }
+
+
                     _logger.Info("Data successfully loaded into repositories.");
                 }
 
@@ -147,6 +161,7 @@ namespace AdvertManager.Server.Service
                         Price = 85000,
                         CreatedAt = DateTime.Now,
                         ExpirationDate = DateTime.Now.AddMonths(1).AddHours(5),
+                        StateName = "Active",
                         Publisher = new Publisher
                         {
                             Id = 1,
@@ -176,6 +191,7 @@ namespace AdvertManager.Server.Service
                         Price = 150000,
                         CreatedAt = DateTime.Now,
                         ExpirationDate = DateTime.Now.AddDays(15),
+                        StateName = "Active",
                         Publisher = new Publisher
                         {
                             Id = 2,
@@ -205,6 +221,7 @@ namespace AdvertManager.Server.Service
                         Price = 500,
                         CreatedAt = DateTime.Now,
                         ExpirationDate = DateTime.Now.AddMonths(2),
+                        StateName = "Active",
                         Publisher = new Publisher
                         {
                             Id = 3,
@@ -227,7 +244,10 @@ namespace AdvertManager.Server.Service
                         ) { Id = 3 }
                     }
                 };
-
+                foreach(var ad in dummyAdverts)
+                {
+                    ad.SetState(new ActiveState());
+                }
                 var dummyNewspaperAdverts = new List<NewspaperAdvertisement>
                 {
                     new NewspaperAdvertisement

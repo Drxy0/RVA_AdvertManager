@@ -1,5 +1,6 @@
 ﻿using AdvertManager.Client.Helpers;
 using AdvertManager.Domain.Entities;
+using AdvertManager.Domain.State;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -109,6 +110,8 @@ namespace AdvertManager.Client.ViewModels
             try
             {
                 advertisement.CreatedAt = DateTime.Now;
+                advertisement.SetState(new ActiveState());
+                _proxy.AddAdvertisement(advertisement);
                 _advertisements.Add(advertisement);
 
             }
@@ -124,6 +127,8 @@ namespace AdvertManager.Client.ViewModels
             try
             {
                 advertisement.CreatedAt = SelectedAdvertisement.CreatedAt;
+                advertisement.SetState(advertisement.State);
+                _proxy.UpdateAdvertisement(advertisement);
                 _advertisementsView.Refresh();
 
             }
@@ -146,6 +151,7 @@ namespace AdvertManager.Client.ViewModels
 
             if (result == MessageBoxResult.Yes)
             {
+                _proxy.DeleteAdvertisement(SelectedAdvertisement);
                 _advertisements.Remove(SelectedAdvertisement);
             }
         }

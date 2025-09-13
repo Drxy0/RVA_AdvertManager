@@ -17,12 +17,14 @@ namespace AdvertManager.Client.ViewModels
         private LocationsViewModel locationsViewModel;
         private PublishersViewModel publishersViewModel;
         private NewspaperAdvertsViewModel newspaperAdvertsViewModel;
+        private AdvertisementStateChartViewModel advertisementStateChartViewModel;
 
         // Shared collections
         public ObservableCollection<Location> Locations { get; }
         public ObservableCollection<RealEstate> RealEstates { get; }
         public ObservableCollection<Publisher> Publishers { get; }
         public ObservableCollection<Advertisement> Advertisements { get; }
+        public ObservableCollection<Advertisement> AdvertisementsOnly { get; }
         public ObservableCollection<NewspaperAdvertisement> NewspaperAdverts { get; }
 
         private ClientProxy _proxy;
@@ -46,6 +48,7 @@ namespace AdvertManager.Client.ViewModels
             locationsViewModel = new LocationsViewModel(Locations);
             publishersViewModel = new PublishersViewModel(Publishers);
             newspaperAdvertsViewModel = new NewspaperAdvertsViewModel(NewspaperAdverts, Publishers);
+            advertisementStateChartViewModel = new AdvertisementStateChartViewModel();
 
             CurrentViewModel = advertisementsViewModel; // default view
 
@@ -83,6 +86,9 @@ namespace AdvertManager.Client.ViewModels
                 case "newspaperAdverts":
                     CurrentViewModel = newspaperAdvertsViewModel;
                     break;
+                case "advertisementChart":
+                    CurrentViewModel = advertisementStateChartViewModel;
+                    break;
             }
         }
 
@@ -107,9 +113,9 @@ namespace AdvertManager.Client.ViewModels
                         Publishers.Add(pub);
 
                     Advertisements.Clear();
-                    foreach (var ad in _proxy.GetAllAdvertisements())
+                    foreach (var ad in _proxy.GetAllAdvertisements()) {
                         Advertisements.Add(ad);
-
+                    }
                     NewspaperAdverts.Clear();
                     foreach (NewspaperAdvertisement newsAd in _proxy.GetAllNewspaperAdvertisements())
                     {
