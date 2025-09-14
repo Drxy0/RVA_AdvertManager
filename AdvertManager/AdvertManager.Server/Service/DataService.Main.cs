@@ -252,7 +252,7 @@ namespace AdvertManager.Server.Service
                 {
                     new NewspaperAdvertisement
                     {
-                        Id = 200,
+                        Id = 4,
                         Title = "Charming Studio Flat Available",
                         Description = "Cozy 25m² studio in central Liverpool. Perfect for students or professionals.",
                         PublisherFullName = "John Doe",
@@ -260,7 +260,7 @@ namespace AdvertManager.Server.Service
                     },
                     new NewspaperAdvertisement
                     {
-                        Id = 201,
+                        Id = 5,
                         Title = "Spacious Countryside House for Rent",
                         Description = "4-bedroom house with garden and garage, located in the quiet suburbs of York.",
                         PublisherFullName = "Emily Clark",

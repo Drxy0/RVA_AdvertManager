@@ -47,8 +47,31 @@ namespace AdvertManager.Client.ViewModels
             realEstatesViewModel = new RealEstatesViewModel(RealEstates, Locations);
             locationsViewModel = new LocationsViewModel(Locations);
             publishersViewModel = new PublishersViewModel(Publishers);
-            newspaperAdvertsViewModel = new NewspaperAdvertsViewModel(NewspaperAdverts, Publishers);
+            newspaperAdvertsViewModel = new NewspaperAdvertsViewModel(NewspaperAdverts, Publishers, Advertisements);
             advertisementStateChartViewModel = new AdvertisementStateChartViewModel();
+
+            newspaperAdvertsViewModel.NewspaperAdAdded += (newsAd) =>
+            {
+                var adapter = new NewspaperAdvertisementAdapter(newsAd);
+                var matchedPublisher = Publishers.FirstOrDefault(p =>
+                            $"{p.FirstName} {p.LastName}".Equals(newsAd.PublisherFullName, StringComparison.OrdinalIgnoreCase));
+                if (matchedPublisher == null)
+                {
+                    matchedPublisher = Publishers.FirstOrDefault(p =>
+                        p.ContactNumber.Equals(newsAd.PhoneNumber, StringComparison.OrdinalIgnoreCase));
+                }
+                if (matchedPublisher != null)
+                {
+                    adapter.Publisher = new Publisher
+                    {
+                        Id = matchedPublisher.Id,
+                        FirstName = matchedPublisher.FirstName,
+                        LastName = matchedPublisher.LastName,
+                        ContactNumber = matchedPublisher.ContactNumber
+                    };
+                }
+                Advertisements.Add(adapter);
+            };
 
             CurrentViewModel = advertisementsViewModel; // default view
 
@@ -91,6 +114,8 @@ namespace AdvertManager.Client.ViewModels
                     break;
             }
         }
+
+
 
         private void LoadData()
         {

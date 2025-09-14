@@ -1,4 +1,5 @@
 ﻿using AdvertManager.Domain.Entities;
+using AdvertManager.Domain.State;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,9 +21,7 @@ namespace AdvertManager.Server.Repositories
 
         public void Update(Advertisement entity)
         {
-            var existing = _advertisements.FirstOrDefault
-                (a => a.Title == entity.Title && a.Description == entity.Description);
-
+            var existing = _advertisements.FirstOrDefault(a => a.Id == entity.Id);
             if (existing != null)
             {
                 existing.Title = entity.Title;
@@ -32,14 +31,34 @@ namespace AdvertManager.Server.Repositories
                 existing.Price = entity.Price;
                 existing.Publisher = entity.Publisher;
                 existing.RealEstate = entity.RealEstate;
-                existing.SetState(entity.State);
+                AdvertisementState state;
+                switch (entity.StateName)
+                {
+                    case "Active":
+                        state = new ActiveState();
+                        break;
+                    case "Expired":
+                        state = new ExpiredState();
+                        break;
+                    default:
+                        state = new ActiveState();
+                        break;
+                }
+
+                existing.SetState(state);
             }
         }
 
+
         public void Delete(Advertisement entity)
         {
-            _advertisements.Remove(entity);
+            var existing = _advertisements.FirstOrDefault(a => a.Id == entity.Id);
+            if (existing != null)
+            {
+                _advertisements.Remove(existing);
+            }
         }
+
 
         public IEnumerable<Advertisement> GetAll()
         {
