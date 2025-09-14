@@ -1,11 +1,15 @@
 ﻿using AdvertManager.Client.Helpers;
+using AdvertManager.Domain.Command;
 using AdvertManager.Domain.Entities;
 using AdvertManager.Domain.State;
+using Microsoft.SqlServer.Server;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Windows;
+using System.Linq;
 using System.Windows.Data;
 
 namespace AdvertManager.Client.ViewModels
@@ -17,6 +21,7 @@ namespace AdvertManager.Client.ViewModels
         private ICollectionView _advertisementsView;
         private string _searchText;
         private readonly IDialogService _dialogService;
+        private readonly CommandManager _commandManager = new CommandManager();
 
         public ObservableCollection<Publisher> Publishers { get; }
         public ObservableCollection<RealEstate> RealEstates { get; }
@@ -24,6 +29,8 @@ namespace AdvertManager.Client.ViewModels
         public MyICommand AddEntityCommand { get; private set; }
         public MyICommand UpdateEntityCommand { get; private set; }
         public MyICommand RemoveEntityCommand { get; private set; }
+        public MyICommand UndoCommand { get; private set; }
+        public MyICommand RedoCommand { get; private set; }
 
         private Advertisement _selectedAdvertisement;
         public Advertisement SelectedAdvertisement
@@ -58,6 +65,8 @@ namespace AdvertManager.Client.ViewModels
             AddEntityCommand = new MyICommand(OnAdd);
             UpdateEntityCommand = new MyICommand(OnUpdate, CanModify);
             RemoveEntityCommand = new MyICommand(OnRemove, CanModify);
+            UndoCommand = new MyICommand(OnUndo, CanUndo);
+            RedoCommand = new MyICommand(OnRedo, CanRedo);
         }
 
         public ICollectionView AdvertisementsView => _advertisementsView;
@@ -68,7 +77,7 @@ namespace AdvertManager.Client.ViewModels
             set
             {
                 SetProperty(ref _searchText, value);
-                _advertisementsView.Refresh(); // triggers filtering
+                _advertisementsView.Refresh();
             }
         }
 
@@ -76,7 +85,7 @@ namespace AdvertManager.Client.ViewModels
         {
             var formViewModel = new AdvertisementFormViewModel(
                 OnSaveAdvertisement,
-                (result) => { /* Optional: do something on close */ },
+                (result) => { },
                 isEditMode: false);
 
             var dialogResult = _dialogService.ShowDialog(formViewModel, "Add New Advertisement");
@@ -93,7 +102,7 @@ namespace AdvertManager.Client.ViewModels
 
             var formViewModel = new AdvertisementFormViewModel(
                 OnUpdateAdvertisement,
-                (result) => { /* Optional */ },
+                (result) => { },
                 isEditMode: true,
                 SelectedAdvertisement);
 
@@ -109,11 +118,15 @@ namespace AdvertManager.Client.ViewModels
         {
             try
             {
+                int newId = _advertisements.Any() ? _advertisements.Max(a => a.Id) + 1 : 1;
+                advertisement.Id = newId;
                 advertisement.CreatedAt = DateTime.Now;
                 advertisement.SetState(new ActiveState());
                 _proxy.AddAdvertisement(advertisement);
-                _advertisements.Add(advertisement);
-
+                var cmd = new AddAdvertisementCommand(_advertisements, advertisement);
+                _commandManager.ExecuteCommand(cmd);
+                UndoCommand.RaiseCanExecuteChanged();
+                RedoCommand.RaiseCanExecuteChanged();
             }
             catch (Exception ex)
             {
@@ -122,15 +135,47 @@ namespace AdvertManager.Client.ViewModels
             }
         }
 
-        private void OnUpdateAdvertisement(Advertisement advertisement)
+        private void OnUpdateAdvertisement(Advertisement editedAd)
         {
+            if (SelectedAdvertisement == null) return;
+
             try
             {
-                advertisement.CreatedAt = SelectedAdvertisement.CreatedAt;
-                advertisement.SetState(advertisement.State);
-                _proxy.UpdateAdvertisement(advertisement);
-                _advertisementsView.Refresh();
+                var original = SelectedAdvertisement;
 
+                var oldCopy = new Advertisement
+                {
+                    Id = original.Id,
+                    Title = original.Title,
+                    Description = original.Description,
+                    CreatedAt = original.CreatedAt,
+                    ExpirationDate = original.ExpirationDate,
+                    Price = original.Price,
+                    Publisher = original.Publisher,
+                    RealEstate = original.RealEstate,
+                    StateName = original.StateName,
+                };
+
+                var newCopy = new Advertisement
+                {
+                    Id = editedAd.Id,
+                    Title = editedAd.Title,
+                    Description = editedAd.Description,
+                    CreatedAt = original.CreatedAt,
+                    ExpirationDate = editedAd.ExpirationDate,
+                    Price = editedAd.Price,
+                    Publisher = editedAd.Publisher,
+                    RealEstate = editedAd.RealEstate,
+                    StateName = editedAd.StateName,
+                };
+
+                var cmd = new UpdateAdvertisementCommand(original, oldCopy, newCopy);
+                _commandManager.ExecuteCommand(cmd);
+                _proxy.UpdateAdvertisement(newCopy);
+
+                _advertisementsView.Refresh();
+                UndoCommand.RaiseCanExecuteChanged();
+                RedoCommand.RaiseCanExecuteChanged();
             }
             catch (Exception ex)
             {
@@ -152,11 +197,60 @@ namespace AdvertManager.Client.ViewModels
             if (result == MessageBoxResult.Yes)
             {
                 _proxy.DeleteAdvertisement(SelectedAdvertisement);
-                _advertisements.Remove(SelectedAdvertisement);
+                var cmd = new RemoveAdvertisementCommand(_advertisements, SelectedAdvertisement);
+                _commandManager.ExecuteCommand(cmd);
+                UndoCommand.RaiseCanExecuteChanged();
+                RedoCommand.RaiseCanExecuteChanged();
             }
         }
 
         private bool CanModify() => SelectedAdvertisement != null;
+
+        private bool CanUndo() => _commandManager.CanUndo;
+        private bool CanRedo() => _commandManager.CanRedo;
+
+        private void OnUndo()
+        {
+            var lastCommand = _commandManager.PeekUndo();
+            if (lastCommand is AddAdvertisementCommand addCmd)
+            {
+                _proxy.DeleteAdvertisement(addCmd.Advertisement);
+            }
+            else if (lastCommand is RemoveAdvertisementCommand removeCmd)
+            {
+                _proxy.AddAdvertisement(removeCmd.Advertisement);
+            }
+            else if (lastCommand is UpdateAdvertisementCommand updateCmd)
+            {
+                _proxy.UpdateAdvertisement(updateCmd.OldAd);
+            }
+
+            _commandManager.Undo();
+            _advertisementsView.Refresh();
+            UndoCommand.RaiseCanExecuteChanged();
+            RedoCommand.RaiseCanExecuteChanged();
+        }
+
+        private void OnRedo()
+        {
+            var lastCommand = _commandManager.PeekRedo();
+            if (lastCommand is AddAdvertisementCommand addCmd)
+            {
+                _proxy.AddAdvertisement(addCmd.Advertisement);
+            }
+            else if (lastCommand is RemoveAdvertisementCommand removeCmd)
+            {
+                _proxy.DeleteAdvertisement(removeCmd.Advertisement);
+            }
+            else if (lastCommand is UpdateAdvertisementCommand updateCmd)
+            {
+                _proxy.UpdateAdvertisement(updateCmd.NewAd);
+            }
+            _commandManager.Redo();
+            _advertisementsView.Refresh();
+            UndoCommand.RaiseCanExecuteChanged();
+            RedoCommand.RaiseCanExecuteChanged();
+        }
 
         private bool FilterAdvertisements(object obj)
         {
@@ -165,8 +259,6 @@ namespace AdvertManager.Client.ViewModels
             if (string.IsNullOrWhiteSpace(SearchText)) return true;
 
             var term = SearchText.ToLower();
-
-            // Search in Advertisement properties
             bool matches =
                 ad.Title?.ToLower().Contains(term) == true ||
                 ad.Description?.ToLower().Contains(term) == true ||

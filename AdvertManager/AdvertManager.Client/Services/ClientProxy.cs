@@ -1,4 +1,5 @@
-﻿using AdvertManager.Domain.Entities;
+﻿using AdvertManager.Client.Views;
+using AdvertManager.Domain.Entities;
 using AdvertManager.Server.DataStorage;
 using AdvertManager.Server.Service.Interfaces;
 using log4net;

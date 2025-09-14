@@ -47,8 +47,8 @@
             <Button Content="Add" Command="{Binding AddEntityCommand}" Margin="0,5"/>
             <Button Content="Update" Command="{Binding UpdateEntityCommand}" Margin="0,5"/>
             <Button Content="Remove" Command="{Binding RemoveEntityCommand}" Margin="0,5"/>
-            <Button Content="Redo" Margin="0,5"/>
-            <Button Content="Undo" Margin="0,5"/>
+            <Button Content="Undo" Command="{Binding UndoCommand}" Margin="0,5"/>
+            <Button Content="Redo" Command="{Binding RedoCommand}" Margin="0,5"/>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Data;
 using System.ServiceModel;
+using System;
 
 namespace AdvertManager.Client.ViewModels
 {
@@ -19,12 +20,17 @@ namespace AdvertManager.Client.ViewModels
         public ObservableCollection<NewspaperAdvertisement> Ads { get; }
         public ObservableCollection<Publisher> Publishers { get; }
 
+        public ObservableCollection<Advertisement> AllAds { get; }
+
+        public event Action<NewspaperAdvertisement> NewspaperAdAdded;
+
         public MyICommand AddCommand { get; }
 
         // Constructor for injecting shared collections
         public NewspaperAdvertsViewModel(
             ObservableCollection<NewspaperAdvertisement> newspaperAds,
-            ObservableCollection<Publisher> publishers)
+            ObservableCollection<Publisher> publishers,
+            ObservableCollection<Advertisement> advertisements)
         {
             _proxy = new ClientProxy(
                 new NetTcpBinding(),
@@ -32,6 +38,7 @@ namespace AdvertManager.Client.ViewModels
 
             Ads = newspaperAds ?? new ObservableCollection<NewspaperAdvertisement>();
             Publishers = publishers ?? new ObservableCollection<Publisher>();
+            AllAds = advertisements ?? new ObservableCollection<Advertisement>();
 
             _adsView = CollectionViewSource.GetDefaultView(Ads);
 
@@ -95,12 +102,15 @@ namespace AdvertManager.Client.ViewModels
         {
             if (!Validate()) return;
 
-            int newId = Ads.Any() ? Ads.Max(a => a.Id) + 1 : 1;
-            FormAd.Id = newId;
+            int maxNewspaperId = Ads.Any() ? Ads.Max(a => a.Id) + 1 : 1;
+            int maxAdId = AllAds.Any() ? AllAds.Max(a => a.Id) + 1 : 1;
+            FormAd.Id = Math.Max(maxNewspaperId, maxAdId);
 
             _proxy.AddNewspaperAdvertisement(FormAd);
 
             Ads.Add(FormAd);
+
+            NewspaperAdAdded?.Invoke(FormAd);
             FormAd = new NewspaperAdvertisement("", "", "", "");
 
             _adsView.Refresh();

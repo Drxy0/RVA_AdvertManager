@@ -2,6 +2,7 @@
 using AdvertManager.Server.Service.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace AdvertManager.Server.Service
@@ -59,6 +60,7 @@ namespace AdvertManager.Server.Service
                 throw;
             }
         }
+
 
         public IEnumerable<Advertisement> GetAllAdvertisements()
         {

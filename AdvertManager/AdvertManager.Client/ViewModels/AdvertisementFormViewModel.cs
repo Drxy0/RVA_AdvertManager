@@ -1,5 +1,6 @@
 ﻿using AdvertManager.Client.Helpers;
 using AdvertManager.Domain.Entities;
+using AdvertManager.Domain.State;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -10,7 +11,8 @@ namespace AdvertManager.Client.ViewModels
     {
         private readonly Action<Advertisement> _onSave;
         internal Action<bool> _onClose;
-        private Advertisement _advertisement;
+        private Advertisement _editableAdvertisement;
+        private Advertisement _originalAdvertisement;
         private bool _isEditMode;
 
         private string _titleError;
@@ -20,9 +22,9 @@ namespace AdvertManager.Client.ViewModels
         private ClientProxy _proxy;
 
         public AdvertisementFormViewModel(
-            Action<Advertisement> onSave, 
-            Action<bool> onClose, 
-            bool isEditMode = false, 
+            Action<Advertisement> onSave,
+            Action<bool> onClose,
+            bool isEditMode = false,
             Advertisement existingAd = null)
         {
             _onSave = onSave;
@@ -33,7 +35,15 @@ namespace AdvertManager.Client.ViewModels
                 new System.ServiceModel.NetTcpBinding(),
                 new System.ServiceModel.EndpointAddress("net.tcp://localhost:8000/Service"));
 
-            Advertisement = existingAd ?? new Advertisement { CreatedAt = DateTime.Now };
+            if (existingAd != null)
+            {
+                _originalAdvertisement = existingAd;
+                Advertisement = CloneAdvertisement(existingAd);
+            }
+            else
+            {
+                Advertisement = new Advertisement { CreatedAt = DateTime.Now };
+            }
 
             LoadPublishers();
             LoadRealEstates();
@@ -48,15 +58,14 @@ namespace AdvertManager.Client.ViewModels
                 SelectedRealEstate = RealEstates.FirstOrDefault(r => r.Id == Advertisement.RealEstate.Id);
             }
 
-
             SaveCommand = new MyICommand(OnSave);
             CancelCommand = new MyICommand(OnCancel);
         }
 
         public Advertisement Advertisement
         {
-            get => _advertisement;
-            set => SetProperty(ref _advertisement, value);
+            get => _editableAdvertisement;
+            set => SetProperty(ref _editableAdvertisement, value);
         }
 
         public bool IsEditMode
@@ -65,11 +74,9 @@ namespace AdvertManager.Client.ViewModels
             set => SetProperty(ref _isEditMode, value);
         }
 
-        // Dropdown collections
         public ObservableCollection<Publisher> Publishers { get; } = new ObservableCollection<Publisher>();
         public ObservableCollection<RealEstate> RealEstates { get; } = new ObservableCollection<RealEstate>();
 
-        // Selected items
         private Publisher _selectedPublisher;
         public Publisher SelectedPublisher
         {
@@ -110,7 +117,6 @@ namespace AdvertManager.Client.ViewModels
             }
         }
 
-        // Error properties
         public string TitleError
         {
             get => _titleError;
@@ -147,6 +153,39 @@ namespace AdvertManager.Client.ViewModels
 
         public MyICommand SaveCommand { get; }
         public MyICommand CancelCommand { get; }
+
+        private Advertisement CloneAdvertisement(Advertisement source)
+        {
+            var clone = new Advertisement
+            {
+                Id = source.Id,
+                Title = source.Title,
+                Description = source.Description,
+                CreatedAt = source.CreatedAt,
+                ExpirationDate = source.ExpirationDate,
+                Price = source.Price,
+                Publisher = source.Publisher,
+                RealEstate = source.RealEstate,
+                StateName = source.StateName
+            };
+            if (source.State != null)
+            {
+                switch (source.StateName)
+                {
+                    case "Active":
+                        clone.SetState(new ActiveState());
+                        break;
+                    case "Expired":
+                        clone.SetState(new ExpiredState());
+                        break;
+                    default:
+                        clone.SetState(new ActiveState());
+                        break;
+                }
+            }
+
+            return clone;
+        }
 
         private string ValidateTitle()
         {
@@ -199,10 +238,12 @@ namespace AdvertManager.Client.ViewModels
         {
             if (!IsFormValid())
                 return;
+            var adToSave = _isEditMode ? Advertisement : Advertisement;
 
-            _onSave?.Invoke(Advertisement);
+            _onSave?.Invoke(adToSave);
             _onClose?.Invoke(true);
         }
+
 
         private void OnCancel()
         {

@@ -43,11 +43,11 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Command\AddCommand.cs" />
-    <Compile Include="Command\AdvertisementCommand.cs" />
-    <Compile Include="Command\Invoker.cs" />
-    <Compile Include="Command\RemoveCommand.cs" />
-    <Compile Include="Command\UpdateCommand.cs" />
+    <Compile Include="Command\AddAdvertisementCommand.cs" />
+    <Compile Include="Command\CommandManager.cs" />
+    <Compile Include="Command\IAdvertisementCommand.cs" />
+    <Compile Include="Command\RemoveAdvertisementCommand.cs" />
+    <Compile Include="Command\UpdateAdvertisementCommand.cs" />
     <Compile Include="Entities\Advertisement.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\Location.cs" />
