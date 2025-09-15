@@ -1,4 +1,3 @@
-using AdvertManager.Domain.Observer;
 using AdvertManager.Domain.State;
 using System;
 using System.Collections.Generic;
@@ -16,12 +15,10 @@ namespace AdvertManager.Domain.Entities
         private Publisher publisher;
         private RealEstate realEstate;
         private AdvertisementState state;
-        private List<IObserver> observers;
 
         public Advertisement()
         {
             createdAt = DateTime.Now;
-            observers = new List<IObserver>();
         }
 
         public int Id { get => id; set => id = value; }
@@ -57,24 +54,6 @@ namespace AdvertManager.Domain.Entities
             return realEstate != null && realEstate.AreaInSquareMeters > 0
                 ? price / (decimal)realEstate.AreaInSquareMeters
                 : 0;
-        }
-
-        public void NotifyObservers()
-        {
-            foreach (var observer in observers)
-            {
-                observer.Update(this);
-            }
-        }
-
-        public void RegisterObserver(IObserver observer)
-        {
-            observers.Add(observer);
-        }
-
-        public void UnregisterObserver(IObserver observer)
-        {
-            observers.Remove(observer);
         }
     }
 }

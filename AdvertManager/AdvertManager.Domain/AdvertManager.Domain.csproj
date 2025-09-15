@@ -56,7 +56,6 @@
     <Compile Include="Entities\Publisher.cs" />
     <Compile Include="Entities\RealEstate.cs" />
     <Compile Include="Enums\RealEstateType.cs" />
-    <Compile Include="Observer\IObserver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="State\ActiveState.cs" />
     <Compile Include="State\AdvertisementState.cs" />

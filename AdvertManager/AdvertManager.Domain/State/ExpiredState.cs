@@ -14,12 +14,6 @@ namespace AdvertManager.Domain.State
             {
                 advertisement.RealEstate.IsAvailable = false;
             }
-            advertisement.NotifyObservers();
-
-            Task.Delay(30000).ContinueWith(_ =>
-            {
-                advertisement.SetState(new ActiveState());
-            });
         }
     }
 }

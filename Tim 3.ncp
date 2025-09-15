@@ -36,9 +36,10 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
       <Entity type="Class">
         <Name>Location</Name>
         <Access>Public</Access>
-        <Location left="1837" top="360" />
+        <Location left="1800" top="360" />
         <Size width="162" height="216" />
         <Collapsed>False</Collapsed>
+        <Member type="Field">private int id</Member>
         <Member type="Field">string city</Member>
         <Member type="Field">string country</Member>
         <Member type="Field">string postalCode</Member>
@@ -62,6 +63,7 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
         <Location left="1535" top="360" />
         <Size width="162" height="216" />
         <Collapsed>False</Collapsed>
+        <Member type="Field">private int id</Member>
         <Member type="Field">double areaInSquareMeters</Member>
         <Member type="Field">RealEstateType type</Member>
         <Member type="Field">int yearBuilt</Member>
@@ -75,6 +77,7 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
         <Location left="1201" top="360" />
         <Size width="227" height="298" />
         <Collapsed>False</Collapsed>
+        <Member type="Field">private int id</Member>
         <Member type="Field">string title</Member>
         <Member type="Field">string description</Member>
         <Member type="Field">DateTime createdAt</Member>
@@ -83,11 +86,9 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
         <Member type="Field">private Publisher publisher</Member>
         <Member type="Field">private RealEstate realEstate</Member>
         <Member type="Field">private AdvertisementState state</Member>
-        <Member type="Field">private List&lt;IObserver&gt; observers</Member>
         <Member type="Method">public void ExtendExpired(int days)</Member>
         <Member type="Method">public void SetState(AdvertisementState state)</Member>
         <Member type="Method">public decimal CalculatePricePerSquareMeter()</Member>
-        <Member type="Method">public void NotifyObservers()</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
@@ -96,6 +97,7 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
         <Location left="925" top="360" />
         <Size width="162" height="216" />
         <Collapsed>False</Collapsed>
+        <Member type="Field">private int id</Member>
         <Member type="Field">string firstName</Member>
         <Member type="Field">string lastName</Member>
         <Member type="Field">string contactNumber</Member>
@@ -108,6 +110,7 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
         <Size width="162" height="216" />
         <Collapsed>False</Collapsed>
         <Member type="Field">protected Advertisement advertisement</Member>
+        <Member type="Property">public abstract string Name { get; }</Member>
         <Member type="Method">public void SetAdvertisement(Advertisement advertisement)</Member>
         <Member type="Method">public abstract void Handle()</Member>
         <Modifier>Abstract</Modifier>
@@ -142,68 +145,7 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
         <Location left="1018" top="731" />
         <Size width="162" height="216" />
         <Collapsed>False</Collapsed>
-        <Member type="Field">private NewspaperAdvertisement newspaperAdvert</Member>
-        <Modifier>None</Modifier>
-      </Entity>
-      <Entity type="Interface">
-        <Name>IObserver</Name>
-        <Access>Public</Access>
-        <Location left="1235" top="33" />
-        <Size width="162" height="216" />
-        <Collapsed>False</Collapsed>
-        <Member type="Method">void Update(Advertisement advert)</Member>
-      </Entity>
-      <Entity type="Class">
-        <Name>ClientView_UIComponents</Name>
-        <Access>Public</Access>
-        <Location left="965" top="33" />
-        <Size width="162" height="216" />
-        <Collapsed>False</Collapsed>
-        <Modifier>None</Modifier>
-      </Entity>
-      <Entity type="Class">
-        <Name>AdvertisementCommand</Name>
-        <Access>Public</Access>
-        <Location left="1941" top="794" />
-        <Size width="162" height="216" />
-        <Collapsed>False</Collapsed>
-        <Member type="Field">protected Advertisement advertisement</Member>
-        <Member type="Method">public abstract void Execute()</Member>
-        <Modifier>Abstract</Modifier>
-      </Entity>
-      <Entity type="Class">
-        <Name>AddCommand</Name>
-        <Access>Public</Access>
-        <Location left="1713" top="1089" />
-        <Size width="162" height="216" />
-        <Collapsed>False</Collapsed>
-        <Modifier>None</Modifier>
-      </Entity>
-      <Entity type="Class">
-        <Name>UpdateCommand</Name>
-        <Access>Public</Access>
-        <Location left="1941" top="1089" />
-        <Size width="162" height="216" />
-        <Collapsed>False</Collapsed>
-        <Modifier>None</Modifier>
-      </Entity>
-      <Entity type="Class">
-        <Name>RemoveCommand</Name>
-        <Access>Public</Access>
-        <Location left="2176" top="1089" />
-        <Size width="162" height="216" />
-        <Collapsed>False</Collapsed>
-        <Modifier>None</Modifier>
-      </Entity>
-      <Entity type="Class">
-        <Name>Invoker</Name>
-        <Access>Public</Access>
-        <Location left="2274" top="794" />
-        <Size width="162" height="216" />
-        <Collapsed>False</Collapsed>
-        <Member type="Field">private Stack&lt;AdvertisementCommand&gt; undoStack</Member>
-        <Member type="Field">private Stack&lt;AdvertisementCommand&gt; redoStack</Member>
-        <Member type="Method">public void ExecuteCommand(AdvertisementCommand command)</Member>
+        <Member type="Field">private readonly NewspaperAdvertisement newspaperAd</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Enum">
@@ -252,9 +194,64 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
         <Collapsed>False</Collapsed>
         <Modifier>None</Modifier>
       </Entity>
+      <Entity type="Interface">
+        <Name>IAdvertisementCommand</Name>
+        <Access>Public</Access>
+        <Location left="1868" top="773" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void Execute()</Member>
+        <Member type="Method">void Unexecute()</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>CommandManager</Name>
+        <Access>Public</Access>
+        <Location left="2208" top="773" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private readonly Stack&lt;IAdvertisementCommand&gt; undoStack</Member>
+        <Member type="Field">private readonly Stack&lt;IAdvertisementCommand&gt; redoStack</Member>
+        <Member type="Method">public void ExecuteCommand(IAdvertisementCommand command)</Member>
+        <Member type="Method">public void Undo()</Member>
+        <Member type="Method">public void Redo()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>AddAdvertisementCommand</Name>
+        <Access>Public</Access>
+        <Location left="1679" top="1089" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private readonly ObservableCollection&lt;Advertisement&gt; ads</Member>
+        <Member type="Field">private readonly Advertisement advert</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>RemoveAdvertisementCommand</Name>
+        <Access>Public</Access>
+        <Location left="1868" top="1089" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private readonly ObservableCollection&lt;Advertisement&gt; ads</Member>
+        <Member type="Field">private readonly Advertisement advert</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>AddAdvertisementCommand</Name>
+        <Access>Public</Access>
+        <Location left="2063" top="1089" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private readonly Advertisement advert</Member>
+        <Member type="Field">private readonly Advertisement oldValues</Member>
+        <Member type="Field">private readonly Advertisement newValues</Member>
+        <Modifier>None</Modifier>
+      </Entity>
     </Entities>
     <Relationships>
       <Relationship type="Association" first="4" second="2">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -262,7 +259,7 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
           <Y>473</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
-          <X>1812</X>
+          <X>1775</X>
           <Y>473</Y>
         </BendPoint>
         <Direction>Unidirectional</Direction>
@@ -314,74 +311,13 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Association" first="11" second="0">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
         <EndRole>adaptee</EndRole>
-      </Relationship>
-      <Relationship type="Association" first="5" second="12">
-        <Label>notifies</Label>
-        <StartOrientation>Vertical</StartOrientation>
-        <EndOrientation>Vertical</EndOrientation>
-        <BendPoint relativeToStartShape="True">
-          <X>1313</X>
-          <Y>306</Y>
-        </BendPoint>
-        <BendPoint relativeToStartShape="False">
-          <X>1313</X>
-          <Y>274</Y>
-        </BendPoint>
-        <Direction>Unidirectional</Direction>
-        <AssociationType>Composition</AssociationType>
-        <StartMultiplicity>1</StartMultiplicity>
-        <EndMultiplicity>0..*</EndMultiplicity>
-      </Relationship>
-      <Relationship type="Realization" first="13" second="12">
-        <StartOrientation>Horizontal</StartOrientation>
-        <EndOrientation>Horizontal</EndOrientation>
-        <BendPoint relativeToStartShape="True">
-          <X>1152</X>
-          <Y>139</Y>
-        </BendPoint>
-        <BendPoint relativeToStartShape="False">
-          <X>1206</X>
-          <Y>139</Y>
-        </BendPoint>
-      </Relationship>
-      <Relationship type="Generalization" first="15" second="14">
-        <StartOrientation>Vertical</StartOrientation>
-        <EndOrientation>Vertical</EndOrientation>
-      </Relationship>
-      <Relationship type="Generalization" first="16" second="14">
-        <StartOrientation>Vertical</StartOrientation>
-        <EndOrientation>Vertical</EndOrientation>
-      </Relationship>
-      <Relationship type="Generalization" first="17" second="14">
-        <StartOrientation>Vertical</StartOrientation>
-        <EndOrientation>Vertical</EndOrientation>
-      </Relationship>
-      <Relationship type="Association" first="14" second="5">
-        <StartOrientation>Vertical</StartOrientation>
-        <EndOrientation>Vertical</EndOrientation>
-        <BendPoint relativeToStartShape="False">
-          <X>1400</X>
-          <Y>686</Y>
-        </BendPoint>
-        <Direction>Unidirectional</Direction>
-        <AssociationType>Association</AssociationType>
-        <EndRole>#receiver</EndRole>
-        <StartMultiplicity>0..*</StartMultiplicity>
-        <EndMultiplicity>1</EndMultiplicity>
-      </Relationship>
-      <Relationship type="Association" first="18" second="14">
-        <Label>calls</Label>
-        <StartOrientation>Horizontal</StartOrientation>
-        <EndOrientation>Horizontal</EndOrientation>
-        <Direction>Unidirectional</Direction>
-        <AssociationType>Aggregation</AssociationType>
-        <StartMultiplicity>0..*</StartMultiplicity>
-        <EndMultiplicity>0..*</EndMultiplicity>
       </Relationship>
       <Relationship type="Generalization" first="11" second="5">
         <StartOrientation>Vertical</StartOrientation>
@@ -391,9 +327,7 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
           <Y>686</Y>
         </BendPoint>
       </Relationship>
-      <Relationship type="Dependency" first="4" second="19">
-        <Label>
-        </Label>
+      <Relationship type="Dependency" first="4" second="12">
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -405,17 +339,51 @@ Definisati nedostajuće enumeracije sa proizvoljnim vrednostima
           <Y>278</Y>
         </BendPoint>
       </Relationship>
-      <Relationship type="Realization" first="21" second="20">
+      <Relationship type="Realization" first="14" second="13">
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
-      <Relationship type="Realization" first="22" second="20">
+      <Relationship type="Realization" first="15" second="13">
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
-      <Relationship type="Realization" first="23" second="20">
+      <Relationship type="Realization" first="16" second="13">
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="18" second="17">
+        <Label>calls</Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Aggregation</AssociationType>
+        <StartMultiplicity>0..*</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Realization" first="19" second="17">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="20" second="17">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="21" second="17">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="17" second="5">
+        <Label>targets</Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>1464</X>
+          <Y>629</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
       </Relationship>
     </Relationships>
   </ProjectItem>

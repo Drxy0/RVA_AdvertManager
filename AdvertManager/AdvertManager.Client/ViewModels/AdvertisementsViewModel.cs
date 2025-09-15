@@ -11,6 +11,7 @@ using System.ServiceModel;
 using System.Windows;
 using System.Linq;
 using System.Windows.Data;
+using System.Windows.Threading;
 
 namespace AdvertManager.Client.ViewModels
 {
@@ -22,6 +23,8 @@ namespace AdvertManager.Client.ViewModels
         private string _searchText;
         private readonly IDialogService _dialogService;
         private readonly CommandManager _commandManager = new CommandManager();
+        private readonly DispatcherTimer _pollTimer;
+
 
         public ObservableCollection<Publisher> Publishers { get; }
         public ObservableCollection<RealEstate> RealEstates { get; }
@@ -67,6 +70,13 @@ namespace AdvertManager.Client.ViewModels
             RemoveEntityCommand = new MyICommand(OnRemove, CanModify);
             UndoCommand = new MyICommand(OnUndo, CanUndo);
             RedoCommand = new MyICommand(OnRedo, CanRedo);
+            _pollTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+            _pollTimer.Tick += (s, e) => PollAndUpdateStates();
+            _pollTimer.Start();
+
         }
 
         public ICollectionView AdvertisementsView => _advertisementsView;
@@ -171,7 +181,7 @@ namespace AdvertManager.Client.ViewModels
 
                 var cmd = new UpdateAdvertisementCommand(original, oldCopy, newCopy);
                 _commandManager.ExecuteCommand(cmd);
-                _proxy.UpdateAdvertisement(newCopy);
+                _proxy.UpdateAdvertisement(cmd.Advert);
 
                 _advertisementsView.Refresh();
                 UndoCommand.RaiseCanExecuteChanged();
@@ -212,6 +222,8 @@ namespace AdvertManager.Client.ViewModels
         private void OnUndo()
         {
             var lastCommand = _commandManager.PeekUndo();
+
+            _commandManager.Undo();
             if (lastCommand is AddAdvertisementCommand addCmd)
             {
                 _proxy.DeleteAdvertisement(addCmd.Advertisement);
@@ -224,8 +236,6 @@ namespace AdvertManager.Client.ViewModels
             {
                 _proxy.UpdateAdvertisement(updateCmd.OldAd);
             }
-
-            _commandManager.Undo();
             _advertisementsView.Refresh();
             UndoCommand.RaiseCanExecuteChanged();
             RedoCommand.RaiseCanExecuteChanged();
@@ -234,6 +244,7 @@ namespace AdvertManager.Client.ViewModels
         private void OnRedo()
         {
             var lastCommand = _commandManager.PeekRedo();
+            _commandManager.Redo();
             if (lastCommand is AddAdvertisementCommand addCmd)
             {
                 _proxy.AddAdvertisement(addCmd.Advertisement);
@@ -244,9 +255,8 @@ namespace AdvertManager.Client.ViewModels
             }
             else if (lastCommand is UpdateAdvertisementCommand updateCmd)
             {
-                _proxy.UpdateAdvertisement(updateCmd.NewAd);
+                _proxy.UpdateAdvertisement(updateCmd.Advert);
             }
-            _commandManager.Redo();
             _advertisementsView.Refresh();
             UndoCommand.RaiseCanExecuteChanged();
             RedoCommand.RaiseCanExecuteChanged();
@@ -283,5 +293,33 @@ namespace AdvertManager.Client.ViewModels
 
             return matches;
         }
+
+        private void PollAndUpdateStates()
+        {
+            var latestAds = _proxy.GetAllAdvertisements();
+            foreach (var ad in _advertisements)
+            {
+                var latest = latestAds.FirstOrDefault(a => a.Id == ad.Id);
+                if (latest != null && ad.StateName != latest.StateName)
+                {
+                    ad.StateName = latest.StateName;
+                    switch (latest.StateName)
+                    {
+                        case "Active":
+                            ad.SetState(new ActiveState());
+                            break;
+                        case "Rented":
+                            ad.SetState(new RentedState());
+                            break;
+                        case "Expired":
+                            ad.SetState(new ExpiredState());
+                            break;
+                    }
+                }
+            }
+
+            _advertisementsView.Refresh();
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AdvertManager.Domain.Entities;
+using System;
 
 namespace AdvertManager.Domain.Command
 {
@@ -9,6 +10,8 @@ namespace AdvertManager.Domain.Command
         private readonly Advertisement _newValues;
         public Advertisement OldAd { get { return _oldValues; } }
         public Advertisement NewAd { get { return _newValues; } }
+
+        public Advertisement Advert { get { return _advert; } }
         public UpdateAdvertisementCommand(Advertisement advert, Advertisement oldValues, Advertisement newValues)
         {
             _advert = advert;
@@ -28,6 +31,8 @@ namespace AdvertManager.Domain.Command
 
         private void Apply(Advertisement source)
         {
+            var wasExpired = _advert.ExpirationDate <= DateTime.Now;
+
             _advert.Title = source.Title;
             _advert.Description = source.Description;
             _advert.CreatedAt = source.CreatedAt;
@@ -35,24 +40,43 @@ namespace AdvertManager.Domain.Command
             _advert.Price = source.Price;
             _advert.Publisher = source.Publisher;
             _advert.RealEstate = source.RealEstate;
-            if (!string.IsNullOrEmpty(source.StateName))
+
+            var isExpiredNow = _advert.ExpirationDate <= DateTime.Now;
+
+            if (isExpiredNow)
             {
-                _advert.StateName = source.StateName;
-                switch (source.StateName)
+                _advert.StateName = "Expired";
+                _advert.SetState(new State.ExpiredState());
+            }
+            else if (wasExpired && !isExpiredNow)
+            {
+                _advert.StateName = "Active";
+                _advert.SetState(new State.ActiveState());
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(source.StateName))
                 {
-                    case "Active":
-                        _advert.SetState(new State.ActiveState());
-                        break;
-                    case "Rented":
-                        _advert.SetState(new State.RentedState());
-                        break;
-                    case "Expired":
-                        _advert.SetState(new State.ExpiredState());
-                        break;
+                    _advert.StateName = source.StateName;
+                    switch (source.StateName)
+                    {
+                        case "Active":
+                            _advert.SetState(new State.ActiveState());
+                            break;
+                        case "Rented":
+                            _advert.SetState(new State.RentedState());
+                            break;
+                        default:
+                            _advert.SetState(new State.ActiveState());
+                            break;
+                    }
+                }
+                else
+                {
+                    _advert.SetState(new State.ActiveState());
                 }
             }
-
-            _advert.NotifyObservers();
         }
+
     }
 }

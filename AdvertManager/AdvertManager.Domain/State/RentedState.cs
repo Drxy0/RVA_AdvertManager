@@ -12,11 +12,17 @@ namespace AdvertManager.Domain.State
             {
                 advertisement.RealEstate.IsAvailable = false;
             }
-            advertisement.NotifyObservers();
 
-            Task.Delay(30000).ContinueWith(_ =>
+            Task.Delay(10000).ContinueWith(_ =>
             {
-                advertisement.SetState(new ExpiredState());
+                if (DateTime.Now >= advertisement.ExpirationDate)
+                {
+                    advertisement.SetState(new ExpiredState());
+                }
+                else
+                {
+                    advertisement.SetState(new ActiveState());
+                }
             });
         }
     }

@@ -30,7 +30,7 @@ namespace AdvertManager.Client.ViewModels
             Advertisements = new ObservableCollection<Advertisement>();
 
             InitializeSeries();
-            LoadData(); // initial load
+            LoadData();
 
             timer = new DispatcherTimer
             {

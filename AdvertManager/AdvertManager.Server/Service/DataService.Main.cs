@@ -84,6 +84,11 @@ namespace AdvertManager.Server.Service
 
                     foreach (var ad in _advertRepository.GetAll())
                     {
+                        if (ad.ExpirationDate <= DateTime.Now)
+                        {
+                            ad.SetState(new ExpiredState());
+                            continue;
+                        }
                         switch (ad.StateName)
                         {
                             case "Active": ad.SetState(new ActiveState()); break;
@@ -91,7 +96,6 @@ namespace AdvertManager.Server.Service
                             case "Expired": ad.SetState(new ExpiredState()); break;
                             default: ad.SetState(new ActiveState()); break;
                         }
-                        ad.NotifyObservers();
                     }
 
 

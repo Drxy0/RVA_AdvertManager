@@ -37,6 +37,9 @@ namespace AdvertManager.Server.Repositories
                     case "Active":
                         state = new ActiveState();
                         break;
+                    case "Rented":
+                        state = new RentedState();
+                        break;
                     case "Expired":
                         state = new ExpiredState();
                         break;
