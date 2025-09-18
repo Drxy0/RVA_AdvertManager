@@ -1,4 +1,5 @@
 ﻿using AdvertManager.Domain.Entities;
+using AdvertManager.Domain.State;
 using AdvertManager.Server.Service.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace AdvertManager.Server.Service
         {
             try
             {
+                ad.SetState(new ActiveState());
                 _advertRepository.Add(ad);
                 SaveData();
                 _logger.Info($"Advertisement added: {ad.Title} (ID: {ad.Id})");

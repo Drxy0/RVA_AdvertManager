@@ -8,22 +8,28 @@ namespace AdvertManager.Domain.State
         public override string Name => "Active";
         public override void Handle()
         {
-            if (advertisement.RealEstate != null)
+            try
             {
-                advertisement.RealEstate.IsAvailable = true;
-            }
+                if (advertisement == null) return;
+                if (advertisement.RealEstate != null)
+                {
+                    advertisement.RealEstate.IsAvailable = true;
+                }
 
-            Task.Delay(5000).ContinueWith(_ =>
-            {
-                if (DateTime.Now >= advertisement.ExpirationDate)
+                Task.Delay(5000).ContinueWith(_ =>
                 {
-                    advertisement.SetState(new ExpiredState());
-                }
-                else
-                {
-                    advertisement.SetState(new RentedState());
-                }
-            });
+                    if (advertisement == null) return;
+                    if (DateTime.Now >= advertisement.ExpirationDate)
+                    {
+                        advertisement.SetState(new ExpiredState());
+                    }
+                    else
+                    {
+                        advertisement.SetState(new RentedState());
+                    }
+                });
+            }
+            catch { }
         }
     }
 }
