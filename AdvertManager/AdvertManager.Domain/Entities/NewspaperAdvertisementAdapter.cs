@@ -1,7 +1,9 @@
 using System;
+using System.Runtime.Serialization;
 
 namespace AdvertManager.Domain.Entities
 {
+    [DataContract]
     public class NewspaperAdvertisementAdapter : Advertisement
     {
         private readonly NewspaperAdvertisement _newspaperAd;

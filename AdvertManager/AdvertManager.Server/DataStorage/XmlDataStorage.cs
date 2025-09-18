@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 
 namespace AdvertManager.Server.DataStorage
 {
-    public class XmlDataStorage : IDataStorage
+    internal class XmlDataStorage : IDataStorage
     {
         public void Save<T>(string filePath, T data)
         {

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace AdvertManager.Server.Repositories
 {
-    public class LocationRepository : IRepository<Location>
+    internal class LocationRepository : IRepository<Location>
     {
         private readonly List<Location> _locations = new List<Location>();
 

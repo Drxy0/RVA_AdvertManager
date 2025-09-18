@@ -1,11 +1,10 @@
 ﻿using AdvertManager.Domain.Entities;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 
 namespace AdvertManager.Server.Repositories
 {
-    public class RealEstateRepository : IRepository<RealEstate>
+    internal class RealEstateRepository : IRepository<RealEstate>
     {
         private readonly List<RealEstate> _realEstates = new List<RealEstate>();
 

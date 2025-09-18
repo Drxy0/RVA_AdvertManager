@@ -4,7 +4,7 @@ using System.IO;
 
 namespace AdvertManager.Server.DataStorage
 {
-    public class JsonDataStorage : IDataStorage
+    internal class JsonDataStorage : IDataStorage
     {
         public void Save<T>(string filePath, T data)
         {

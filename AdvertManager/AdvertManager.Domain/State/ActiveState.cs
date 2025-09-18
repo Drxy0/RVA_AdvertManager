@@ -13,7 +13,7 @@ namespace AdvertManager.Domain.State
                 advertisement.RealEstate.IsAvailable = true;
             }
 
-            Task.Delay(10000).ContinueWith(_ =>
+            Task.Delay(5000).ContinueWith(_ =>
             {
                 if (DateTime.Now >= advertisement.ExpirationDate)
                 {

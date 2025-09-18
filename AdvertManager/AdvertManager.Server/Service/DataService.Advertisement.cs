@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace AdvertManager.Server.Service
 {
-    public partial class DataService : IDataService
+    internal partial class DataService : IDataService
     {
         public void AddAdvertisement(Advertisement ad)
         {

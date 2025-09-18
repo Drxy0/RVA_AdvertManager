@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace AdvertManager.Server.Repositories
 {
-    public class AdvertisementRepository : IRepository<Advertisement>
+    internal class AdvertisementRepository : IRepository<Advertisement>
     {
         private readonly List<Advertisement> _advertisements = new List<Advertisement>();
 

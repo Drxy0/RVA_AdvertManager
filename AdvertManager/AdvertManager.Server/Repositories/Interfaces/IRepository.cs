@@ -2,7 +2,7 @@
 
 namespace AdvertManager.Server.Repositories
 {
-    public interface IRepository<T>
+    internal interface IRepository<T>
     {
         void Add(T entity);
         void AddRange(IEnumerable<T> entities);

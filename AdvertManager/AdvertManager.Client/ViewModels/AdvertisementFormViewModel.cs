@@ -43,6 +43,7 @@ namespace AdvertManager.Client.ViewModels
             else
             {
                 Advertisement = new Advertisement { CreatedAt = DateTime.Now };
+                Advertisement.SetState(new ActiveState());
             }
 
             LoadPublishers();
@@ -243,7 +244,6 @@ namespace AdvertManager.Client.ViewModels
             _onSave?.Invoke(adToSave);
             _onClose?.Invoke(true);
         }
-
 
         private void OnCancel()
         {

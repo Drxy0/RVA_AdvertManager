@@ -8,7 +8,7 @@ using AdvertManager.Domain.Entities;
 
 namespace AdvertManager.Server.DataStorage
 {
-    public class CsvDataStorage : IDataStorage
+    internal class CsvDataStorage : IDataStorage
     {
         public void Save<T>(string folderPath, T data)
         {

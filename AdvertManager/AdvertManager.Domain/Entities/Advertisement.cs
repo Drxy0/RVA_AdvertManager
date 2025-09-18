@@ -1,10 +1,12 @@
 using AdvertManager.Domain.State;
 using System;
-using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace AdvertManager.Domain.Entities
 {
-	public class Advertisement
+    [DataContract]
+    [KnownType(typeof(NewspaperAdvertisementAdapter))]
+    public class Advertisement
 	{
         private int id;
         private string title;
@@ -21,15 +23,32 @@ namespace AdvertManager.Domain.Entities
             createdAt = DateTime.Now;
         }
 
+        [DataMember]
         public int Id { get => id; set => id = value; }
+
+        [DataMember]
         public string Title { get => title; set => title = value; }
+
+        [DataMember]
         public string Description { get => description; set => description = value; }
+
+        [DataMember]
         public DateTime CreatedAt { get => createdAt; set => createdAt = value; }
+
+        [DataMember]
         public DateTime ExpirationDate { get => expirationDate; set => expirationDate = value; }
+
+        [DataMember]
         public decimal Price { get => price; set => price = value; }
+
+        [DataMember]
         public Publisher Publisher { get => publisher; set => publisher = value; }
+
+        [DataMember]
         public RealEstate RealEstate { get => realEstate; set => realEstate = value; }
         public AdvertisementState State => state;
+        
+        [DataMember]
         public string StateName { get; set; }
 
         public void ExtendExpired(int days)

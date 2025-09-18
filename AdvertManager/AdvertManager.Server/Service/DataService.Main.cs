@@ -14,7 +14,7 @@ using System.ServiceModel;
 namespace AdvertManager.Server.Service
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public partial class DataService : IDataService
+    internal partial class DataService : IDataService
     {
         private readonly AdvertisementRepository _advertRepository = new AdvertisementRepository();
         private readonly PublisherRepository _publisherRepository = new PublisherRepository();
@@ -82,22 +82,7 @@ namespace AdvertManager.Server.Service
                     _locationRepository.AddRange(loaded.Locations ?? new List<Location>());
                     _newspaperAdvertRepository.AddRange(loaded.NewspaperAdvertisements ?? new List<NewspaperAdvertisement>());
 
-                    foreach (var ad in _advertRepository.GetAll())
-                    {
-                        if (ad.ExpirationDate <= DateTime.Now)
-                        {
-                            ad.SetState(new ExpiredState());
-                            continue;
-                        }
-                        switch (ad.StateName)
-                        {
-                            case "Active": ad.SetState(new ActiveState()); break;
-                            case "Rented": ad.SetState(new RentedState()); break;
-                            case "Expired": ad.SetState(new ExpiredState()); break;
-                            default: ad.SetState(new ActiveState()); break;
-                        }
-                    }
-
+                    ApplyAdvertisementStates(_advertRepository.GetAll());
 
                     _logger.Info("Data successfully loaded into repositories.");
                 }
@@ -165,7 +150,7 @@ namespace AdvertManager.Server.Service
                         Price = 85000,
                         CreatedAt = DateTime.Now,
                         ExpirationDate = DateTime.Now.AddMonths(1).AddHours(5),
-                        StateName = "Active",
+                        StateName = "Rented",
                         Publisher = new Publisher
                         {
                             Id = 1,
@@ -223,9 +208,9 @@ namespace AdvertManager.Server.Service
                         Title = "Office space to let",
                         Description = "Modern office space, 45m², fully furnished, near public transport.",
                         Price = 500,
-                        CreatedAt = DateTime.Now,
-                        ExpirationDate = DateTime.Now.AddMonths(2),
-                        StateName = "Active",
+                        CreatedAt = new DateTime(2020, 1, 10),
+                        ExpirationDate = new DateTime(2020, 3, 10),
+                        StateName = "Expired",
                         Publisher = new Publisher
                         {
                             Id = 3,
@@ -246,17 +231,46 @@ namespace AdvertManager.Server.Service
                                 streetNumber: "7C"
                             ) { Id = 3 }
                         ) { Id = 3 }
+                    },
+                    new Advertisement
+                    {
+                        Id = 4,
+                        Title = "Seaside Apartment in Budva",
+                        Description = "Cozy 40m² apartment just 200m from the Adriatic Sea. Ideal for summer holidays.",
+                        Price = 75000,
+                        CreatedAt = new DateTime(2025, 5, 15),
+                        ExpirationDate = DateTime.UtcNow.AddMonths(2),
+                        StateName = "Active",
+                        Publisher = new Publisher
+                        {
+                            Id = 4,
+                            FirstName = "Marko",
+                            LastName = "Petrović",
+                            ContactNumber = "+382 67 123 456"
+                        },
+                        RealEstate = new RealEstate(
+                            areaInSquareMeters: 40,
+                            type: RealEstateType.FLAT,
+                            yearBuilt: 2010,
+                            isAvailable: false,
+                            location: new Location(
+                                city: "Budva",
+                                country: "Montenegro",
+                                postalCode: "85310",
+                                street: "Jadranski Put",
+                                streetNumber: "12A"
+                            ) { Id = 4 }
+                        ) { Id = 4 }
                     }
                 };
-                foreach(var ad in dummyAdverts)
-                {
-                    ad.SetState(new ActiveState());
-                }
+
+                ApplyAdvertisementStates(dummyAdverts);
+
                 var dummyNewspaperAdverts = new List<NewspaperAdvertisement>
                 {
                     new NewspaperAdvertisement
                     {
-                        Id = 4,
+                        Id = 20,
                         Title = "Charming Studio Flat Available",
                         Description = "Cozy 25m² studio in central Liverpool. Perfect for students or professionals.",
                         PublisherFullName = "John Doe",
@@ -264,7 +278,7 @@ namespace AdvertManager.Server.Service
                     },
                     new NewspaperAdvertisement
                     {
-                        Id = 5,
+                        Id = 21,
                         Title = "Spacious Countryside House for Rent",
                         Description = "4-bedroom house with garden and garage, located in the quiet suburbs of York.",
                         PublisherFullName = "Emily Clark",
@@ -298,6 +312,26 @@ namespace AdvertManager.Server.Service
             {
                 _logger.Error("Error while seeding default data.", ex);
                 throw;
+            }
+        }
+
+        private void ApplyAdvertisementStates(IEnumerable<Advertisement> adverts)
+        {
+            foreach (var ad in adverts)
+            {
+                if (ad.ExpirationDate <= DateTime.Now)
+                {
+                    ad.SetState(new ExpiredState());
+                    continue;
+                }
+
+                switch (ad.StateName)
+                {
+                    case "Active": ad.SetState(new ActiveState()); break;
+                    case "Rented": ad.SetState(new RentedState()); break;
+                    case "Expired": ad.SetState(new ExpiredState()); break;
+                    default: ad.SetState(new ActiveState()); break;
+                }
             }
         }
     }

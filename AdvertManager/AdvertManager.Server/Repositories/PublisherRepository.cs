@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace AdvertManager.Server.Repositories
 {
-    public class PublisherRepository : IRepository<Publisher>
+    internal class PublisherRepository : IRepository<Publisher>
     {
         private readonly List<Publisher> _publishers = new List<Publisher>();
 

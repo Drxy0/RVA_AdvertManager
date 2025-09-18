@@ -72,7 +72,7 @@ namespace AdvertManager.Server
                 case IStorageType.CSV:
                     storageFolder = Path.Combine(dataFolder, "csv");
                     Directory.CreateDirectory(storageFolder);
-                    filePath = Path.Combine(storageFolder, "entities.csv");
+                    filePath = storageFolder;
                     break;
             }
 
