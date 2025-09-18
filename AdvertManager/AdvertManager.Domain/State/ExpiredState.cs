@@ -10,10 +10,16 @@ namespace AdvertManager.Domain.State
         public override string Name => "Expired";
         public override void Handle()
         {
-            if (advertisement.RealEstate != null)
+            try
             {
-                advertisement.RealEstate.IsAvailable = false;
+                if (advertisement == null) return;
+
+                if (advertisement.RealEstate != null)
+                {
+                    advertisement.RealEstate.IsAvailable = false;
+                }
             }
+            catch { }
         }
     }
 }
